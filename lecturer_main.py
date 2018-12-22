@@ -36,8 +36,8 @@ add_edit_btn = tkinter.Button(top, text="Add/Edit Schedule", command=add_edit, p
 student_list_btn = tkinter.Button(top, text="List Of Students", command=lists, pady=4, padx=4, width="20", height="5")
 logout_btn = tkinter.Button(top, text="Logout", command=logout, pady=4, padx=4, width="20", height="5")
 exit_btn = tkinter.Button(top, text="Exit", command=exit, pady=4, padx=4, width="20", height="5")
-changePass_btn = tkinter.Button(top, text="Credential Settings", command=changePass, pady=4, padx=4, width="20", height="5")
-
+changePass_btn = tkinter.Button(top, text="Credential Settings", command=changePass, pady=4, padx=4, width="20",
+                                height="5")
 labelPhoto.place(x=335, y=30)
 labelTitle.place(x=310, y=130)
 label_user.place(y=200)

@@ -33,7 +33,7 @@ confirm_btn = tkinter.Button(top, text="Confirm", command=confirm, pady=4, padx=
 
 
 labelPhoto.place(x=335, y=40)
-back_btn.place(x=0, y=0)
+back_btn.place(x=200, y=370)
 labelTitle.place(x=310, y=140)
 labelScreen.place(x=250, y=200)
 labelOldPass.place(x=220, y=254)
@@ -42,6 +42,6 @@ labelNewPass.place(x=220, y=294)
 newPass_entry.place(x=325, y=290)
 labelConfirmPass.place(x=200, y=334)
 confirmPass_entry.place(x=325, y=330)
-confirm_btn.place(x=300, y=370)
+confirm_btn.place(x=400, y=370)
 
 top.mainloop()
