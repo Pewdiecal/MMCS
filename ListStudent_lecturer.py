@@ -6,9 +6,26 @@ top.geometry("800x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
+
+def approve():
+    print("approve")
+
+
+def cancel():
+    print("Cancel")
+
+
 label_font_screen = ('Arial', 30)
 label = tkinter.Label(top, text="Student Appointment List", font=label_font_screen)
 labelDetails = tkinter.Label(top, text="Appointment Details", font=label_font_screen)
+labelName = tkinter.Label(top, text="Student Name: ")
+labelID = tkinter.Label(top, text="ID: ")
+labelTime = tkinter.Label(top, text="Consultation Time: ")
+labelDate = tkinter.Label(top, text="Date: Day")
+labelReason = tkinter.Label(top, text="Reason: ")
+labelStatus = tkinter.Label(top, text="Status: ")
+approve_btn = tkinter.Button(top, text="Confirm Appointment", command=approve, pady=4, padx=4, width="20", height="5", fg="green")
+cancel_btn = tkinter.Button(top, text="Cancel Appointment", command=cancel, pady=4, padx=4, width="20", height="5", fg="red")
 tree = tker.Treeview(top)
 tree = tker.Treeview(top, columns=('Name', 'Date', 'Time', 'Status'))
 
@@ -34,5 +51,14 @@ for j in range(20):
 label.place(x=235, y=20)
 tree.place(x=30, y=60)
 labelDetails.place(x=270, y=265)
+labelName.place(x=35, y=310)
+labelID.place(x=35, y=330)
+labelDate.place(x=35, y=350)
+labelTime.place(x=35, y=370)
+labelStatus.place(x=35, y=390)
+labelReason.place(x=35, y=410)
+approve_btn.place(x=600, y=500)
+cancel_btn.place(x=400, y=500)
+
 
 top.mainloop()
