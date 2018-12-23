@@ -1,4 +1,6 @@
 import tkinter
+import os
+import platform
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -38,13 +40,24 @@ logout_btn = tkinter.Button(top, text="Logout", command=logout, pady=4, padx=4, 
 exit_btn = tkinter.Button(top, text="Exit", command=exit, pady=4, padx=4, width="20", height="5")
 changePass_btn = tkinter.Button(top, text="Credential Settings", command=changePass, pady=4, padx=4, width="20", height="5")
 
-labelPhoto.place(x=335, y=30)
-labelTitle.place(x=310, y=130)
-label_user.place(y=200)
-add_edit_btn.place(x=300, y=270)
-student_list_btn.place(x=300, y=370)
-logout_btn.place(y=510)
-exit_btn.place(x=200, y=510)
-changePass_btn.place(x=610, y=510)
+if platform.system() == "Windows":
+    labelPhoto.place(x=360, y=30)
+    labelTitle.place(x=310, y=130)
+    label_user.place(y=200)
+    add_edit_btn.place(x=360, y=270)
+    student_list_btn.place(x=360, y=370)
+    logout_btn.place(y=510)
+    exit_btn.place(x=160, y=510)
+    changePass_btn.place(x=640, y=510)
+
+else:
+    labelPhoto.place(x=335, y=30)
+    labelTitle.place(x=310, y=130)
+    label_user.place(y=200)
+    add_edit_btn.place(x=300, y=270)
+    student_list_btn.place(x=300, y=370)
+    logout_btn.place(y=510)
+    exit_btn.place(x=200, y=510)
+    changePass_btn.place(x=610, y=510)
 
 top.mainloop()

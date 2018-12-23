@@ -34,13 +34,26 @@ labelTitle = tkinter.Label(top, text="MMCS", font=labelfont)
 username = tkinter.Entry(top, bd=5)
 password = tkinter.Entry(top, show="*", bd=5)
 
-labelPhoto.place(x=335, y=30)
-labelTitle.place(x=310, y=140)
-lableUser.place(x=220, y=234)
-username.place(x=295, y=230)
-lablePass.place(x=220, y=275)
-password.place(x=295, y=270)
-login.place(x=300, y=310)
-register.place(x=300, y=410)
+if platform.system() == "Windows":
+    labelPhoto.place(x=335, y=30)
+    labelTitle.place(x=280, y=140)
+    lableUser.place(x=275, y=234)
+    username.place(x=350, y=230)
+    lablePass.place(x=275, y=275)
+    password.place(x=2350, y=270)
+    login.place(x=300, y=310)
+    register.place(x=300, y=410)
+
+else:
+    labelPhoto.place(x=335, y=30)
+    labelTitle.place(x=310, y=140)
+    lableUser.place(x=220, y=234)
+    username.place(x=295, y=230)
+    lablePass.place(x=220, y=275)
+    password.place(x=295, y=270)
+    login.place(x=300, y=310)
+    register.place(x=300, y=410)
+
+
 
 top.mainloop()

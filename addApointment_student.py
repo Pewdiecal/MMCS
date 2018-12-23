@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import ttk as tker
+import platform
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -38,13 +39,20 @@ tree.column('#0', width=400, anchor=tkinter.CENTER)
 tree.column('#1', width=100, anchor=tkinter.CENTER)
 tree.column('#2', width=100, anchor=tkinter.CENTER)
 
-
-label.place(x=270, y=20)
-search.place(x=150, y=80)
-search_btn.place(x=620, y=83)
-tree.place(x=95, y=130)
-confirm_btn.place(x=600, y=500)
-back_btn.place(x=10, y=500)
+if platform.system() == "Windows":
+    label.place(x=220, y=20)
+    search.place(x=150, y=90)
+    search_btn.place(x=590, y=83)
+    tree.place(x=95, y=130)
+    confirm_btn.place(x=600, y=500)
+    back_btn.place(x=10, y=500)
+else:
+    label.place(x=270, y=20)
+    search.place(x=150, y=80)
+    search_btn.place(x=620, y=83)
+    tree.place(x=95, y=130)
+    confirm_btn.place(x=600, y=500)
+    back_btn.place(x=10, y=500)
 
 
 top.mainloop()
