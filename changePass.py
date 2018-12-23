@@ -47,7 +47,7 @@ if platform.system() == "Windows":
     confirm_btn.place(x=400, y=370)
 
 else:
-    
+
     labelPhoto.place(x=335, y=40)
     back_btn.place(x=200, y=370)
     labelTitle.place(x=310, y=140)
@@ -59,7 +59,5 @@ else:
     labelConfirmPass.place(x=200, y=334)
     confirmPass_entry.place(x=325, y=330)
     confirm_btn.place(x=400, y=370)
-    
-
 
 top.mainloop()

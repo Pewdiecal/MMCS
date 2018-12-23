@@ -65,5 +65,4 @@ else:
     reason_text.place(x=150, y=360)
     confirm_btn.place(x=600, y=500)
     back_btn.place(x=400, y=500)
-
 top.mainloop()

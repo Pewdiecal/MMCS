@@ -112,5 +112,4 @@ else:
     back_btn.place(x=400, y=500)
     tree.place(x=70, y=290)
 
-
 top.mainloop()

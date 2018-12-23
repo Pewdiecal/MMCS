@@ -24,8 +24,8 @@ def registerFunc():
 
 photo = tkinter.PhotoImage(file="mmu.gif")
 labelPhoto = tkinter.Label(top, image=photo, width="100", height="100")
-login = tkinter.Button(top, text="Login", command=AuthFunc, pady=4, padx=4, width="20", height="5")
-register = tkinter.Button(top, text="New User", command=registerFunc, pady=4, padx=4, fg='green', width="20",
+login = tkinter.Button(top, text="Login", command=AuthFunc, pady=4, padx=4, width="20", height="5", fg='green')
+register = tkinter.Button(top, text="New User", command=registerFunc, pady=4, padx=4, width="20",
                           height="5")
 lableUser = tkinter.Label(top, text="Username")
 lablePass = tkinter.Label(top, text="Password")
@@ -53,7 +53,6 @@ else:
     password.place(x=295, y=270)
     login.place(x=300, y=310)
     register.place(x=300, y=410)
-
 
 
 top.mainloop()
