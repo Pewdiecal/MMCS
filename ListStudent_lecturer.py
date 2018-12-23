@@ -64,8 +64,8 @@ if platform.system() == "Windows":
     labelTime.place(x=35, y=405)
     labelStatus.place(x=35, y=430)
     labelReason.place(x=35, y=455)
-    approve_btn.place(x=600, y=550)
-    cancel_btn.place(x=400, y=550)
+    approve_btn.place(x=630, y=550)
+    cancel_btn.place(x=460, y=550)
     back_btn.place(x=10, y=550)
 
 else:
