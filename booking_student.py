@@ -2,7 +2,7 @@ import tkinter
 from tkinter import ttk as tker
 
 top = tkinter.Tk()
-top.geometry("900x700")
+top.geometry("800x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
@@ -38,12 +38,12 @@ tree.column('#1', width=200, anchor=tkinter.CENTER)
 tree.column('#2', width=300, anchor=tkinter.CENTER)
 tree.column('#3', width=100, anchor=tkinter.CENTER)
 
-label.place(x=325, y=30)
-list_label.place(x=380, y=100)
-tree.place(x=110, y=150)
-reason_label.place(x=105, y=360)
-reason_text.place(x=186, y=360)
-confirm_btn.place(x=565, y=500)
-back_btn.place(x=365, y=500)
+label.place(x=270, y=30)
+list_label.place(x=330, y=100)
+tree.place(x=75, y=150)
+reason_label.place(x=80, y=360)
+reason_text.place(x=150, y=360)
+confirm_btn.place(x=600, y=500)
+back_btn.place(x=400, y=500)
 
 top.mainloop()

@@ -3,7 +3,7 @@ import os
 import platform
 
 top = tkinter.Tk()
-top.geometry("800x600")
+top.geometry("900x700")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
