@@ -1,4 +1,6 @@
 import tkinter
+import os
+import platform
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -12,6 +14,12 @@ def AuthFunc():
 
 def registerFunc():
     print("register")
+    if platform.system() == "Windows":
+        os.system('MMCS_registration.py')
+    elif platform.system() == "Linux":
+        os.system('python3')
+    elif platform.system() == "Darwin":
+        os.system('python3 ./MMCS_registration.py')
 
 
 photo = tkinter.PhotoImage(file="mmu.gif")
