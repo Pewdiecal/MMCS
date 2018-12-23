@@ -1,17 +1,32 @@
 import tkinter
+import os
+import platform
 
 top = tkinter.Tk()
 top.geometry("800x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
+os.chdir(os.path.dirname(__file__))
 
 
 def add_edit():
     print("add/edit")
+    if platform.system() == "Windows":
+        os.system('addTime_lecturer.py')
+    elif platform.system() == "Linux":
+        os.system('python3')
+    elif platform.system() == "Darwin":
+        os.system('python3 ./addTime_lecturer.py')
 
 
 def lists():
     print("student list")
+    if platform.system() == "Windows":
+        os.system('ListStudent_lecturer.py')
+    elif platform.system() == "Linux":
+        os.system('python3')
+    elif platform.system() == "Darwin":
+        os.system('python3 ./ListStudent_lecturer.py')
 
 
 def logout():
@@ -24,6 +39,12 @@ def exit():
 
 def changePass():
     print("change pass")
+    if platform.system() == "Windows":
+        os.system('changePass.py')
+    elif platform.system() == "Linux":
+        os.system('python3')
+    elif platform.system() == "Darwin":
+        os.system('python3 ./changePass.py')
 
 
 photo = tkinter.PhotoImage(file="mmu.gif")
