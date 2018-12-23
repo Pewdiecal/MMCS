@@ -1,5 +1,7 @@
 import tkinter
 from tkinter import ttk as tker
+import os
+import platform
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -28,10 +30,10 @@ labelTime = tkinter.Label(top, text="Consultation Time: ")
 labelDate = tkinter.Label(top, text="Date: Day")
 labelReason = tkinter.Label(top, text="Reason: ")
 labelStatus = tkinter.Label(top, text="Status: ")
-approve_btn = tkinter.Button(top, text="Confirm Appointment", command=approve, pady=4, padx=4, width="20", height="5", fg="green")
-cancel_btn = tkinter.Button(top, text="Cancel Appointment", command=cancel, pady=4, padx=4, width="20", height="5", fg="red")
+approve_btn = tkinter.Button(top, text="Confirm Appointment", command=approve, pady=4, padx=4, width="20", height="2", fg="green")
+cancel_btn = tkinter.Button(top, text="Cancel Appointment", command=cancel, pady=4, padx=4, width="20", height="2", fg="red")
 back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width="20",
-                          height="5")
+                          height="2")
 tree = tker.Treeview(top)
 tree = tker.Treeview(top, columns=('Name', 'Date', 'Time', 'Status'))
 
@@ -52,18 +54,33 @@ for j in range(20):
     tree.insert("", 0, text=str(j), values=("test", "13/12/18", "1pm", "approved"))
 
 
-label.place(x=235, y=20)
-tree.place(x=30, y=60)
-labelDetails.place(x=270, y=265)
-labelName.place(x=35, y=310)
-labelID.place(x=35, y=330)
-labelDate.place(x=35, y=350)
-labelTime.place(x=35, y=370)
-labelStatus.place(x=35, y=390)
-labelReason.place(x=35, y=410)
-approve_btn.place(x=600, y=500)
-cancel_btn.place(x=400, y=500)
-back_btn.place(x=10, y=500)
+if platform.system() == "Windows":
+    label.place(x=190, y=5)
+    tree.place(x=30, y=60)
+    labelDetails.place(x=245, y=280)
+    labelName.place(x=35, y=330)
+    labelID.place(x=35, y=355)
+    labelDate.place(x=35, y=380)
+    labelTime.place(x=35, y=405)
+    labelStatus.place(x=35, y=430)
+    labelReason.place(x=35, y=455)
+    approve_btn.place(x=630, y=550)
+    cancel_btn.place(x=460, y=550)
+    back_btn.place(x=10, y=550)
 
+else:
+
+    label.place(x=190, y=5)
+    tree.place(x=30, y=60)
+    labelDetails.place(x=270, y=280)
+    labelName.place(x=35, y=330)
+    labelID.place(x=35, y=355)
+    labelDate.place(x=35, y=380)
+    labelTime.place(x=35, y=405)
+    labelStatus.place(x=35, y=430)
+    labelReason.place(x=35, y=455)
+    approve_btn.place(x=600, y=550)
+    cancel_btn.place(x=400, y=550)
+    back_btn.place(x=10, y=550)
 
 top.mainloop()

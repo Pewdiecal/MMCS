@@ -1,5 +1,7 @@
 import tkinter
 from tkinter import ttk as tker
+import os
+import platform
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -44,17 +46,33 @@ tree.column('#4', width=100, anchor=tkinter.CENTER)
 for j in range(20):
     tree.insert("", 0, text=str(j), values=("test", "13/12/18", "1pm", "approved"))
 
+if platform.system() == "Windows":
+    label.place(x=108, y=5)
+    tree.place(x=30, y=60)
+    labelDetails.place(x=220, y=280)
+    labelName.place(x=35, y=330)
+    labelDate.place(x=35, y=355)
+    labelTime.place(x=35, y=380)
+    labelStatus.place(x=35, y=405)
+    labelFaculty.place(x=35, y=430)
+    labelRoom.place(x=35, y=455)
+    labelReason.place(x=35, y=480)
+    back_btn.place(x=640, y=500)
 
-label.place(x=180, y=20)
-tree.place(x=30, y=60)
-labelDetails.place(x=270, y=265)
-labelName.place(x=35, y=310)
-labelDate.place(x=35, y=330)
-labelTime.place(x=35, y=350)
-labelStatus.place(x=35, y=370)
-labelFaculty.place(x=35, y=390)
-labelRoom.place(x=35, y=410)
-labelReason.place(x=35, y=430)
-back_btn.place(x=300, y=500)
+else:
+    label.place(x=180, y=20)
+    tree.place(x=30, y=60)
+    labelDetails.place(x=270, y=265)
+    labelName.place(x=35, y=310)
+    labelDate.place(x=35, y=330)
+    labelTime.place(x=35, y=350)
+    labelStatus.place(x=35, y=370)
+    labelFaculty.place(x=35, y=390)
+    labelRoom.place(x=35, y=410)
+    labelReason.place(x=35, y=430)
+    back_btn.place(x=300, y=500)
+
+
+
 
 top.mainloop()
