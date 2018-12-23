@@ -47,9 +47,9 @@ for j in range(20):
     tree.insert("", 0, text=str(j), values=("test", "13/12/18", "1pm", "approved"))
 
 if platform.system() == "Windows":
-    label.place(x=180, y=5)
+    label.place(x=108, y=5)
     tree.place(x=30, y=60)
-    labelDetails.place(x=270, y=280)
+    labelDetails.place(x=220, y=280)
     labelName.place(x=35, y=330)
     labelDate.place(x=35, y=355)
     labelTime.place(x=35, y=380)
@@ -57,7 +57,7 @@ if platform.system() == "Windows":
     labelFaculty.place(x=35, y=430)
     labelRoom.place(x=35, y=455)
     labelReason.place(x=35, y=480)
-    back_btn.place(x=300, y=500)
+    back_btn.place(x=640, y=500)
 
 else:
     label.place(x=180, y=20)

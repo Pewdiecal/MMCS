@@ -22,8 +22,14 @@ def back():
 
 label_font_screen = ('Arial', 30)
 label = tkinter.Label(top, text="Place Appointment", font=label_font_screen)
-search = tkinter.Entry(top, bd=5, width=50)
-search_btn = tkinter.Button(top, text="Search", command=search, pady=4, padx=4)
+
+if platform.system() == "Windows":
+    search = tkinter.Entry(top, bd=5, width=70)
+    search_btn = tkinter.Button(top, text="Search", command=search, pady=4, padx=4)
+else:
+    search = tkinter.Entry(top, bd=5, width=50)
+    search_btn = tkinter.Button(top, text="Search", command=search, pady=4, padx=4)
+    
 confirm_btn = tkinter.Button(top, text="Confirm", command=confirm, pady=4, padx=4, width="20", height="5", fg="green")
 back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width="20",
                           height="5")

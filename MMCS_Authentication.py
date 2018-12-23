@@ -40,7 +40,7 @@ if platform.system() == "Windows":
     lableUser.place(x=275, y=234)
     username.place(x=350, y=230)
     lablePass.place(x=275, y=275)
-    password.place(x=2350, y=270)
+    password.place(x=350, y=270)
     login.place(x=300, y=310)
     register.place(x=300, y=410)
 

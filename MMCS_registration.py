@@ -56,10 +56,10 @@ back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width=
 register_btn = tkinter.Button(top, text="Register", command=register, pady=4, padx=4, fg='green', width="20",
                               height="5")
 
-if platform.system() == "windows" :
-    labelPhoto.place(x=335, y=30)
-    labelTitle.place(x=310, y=140)
-    labelScreen.place(x=230, y=200)
+if platform.system() == "Windows" :
+    labelPhoto.place(x=355, y=20)
+    labelTitle.place(x=310, y=120)
+    labelScreen.place(x=230, y=195)
     labelName.place(x=250, y=254)
     fullname_entry.place(x=325, y=250)
     labelUserID.place(x=250, y=295)

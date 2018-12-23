@@ -68,9 +68,9 @@ tree.column('#3', width=100, anchor=tkinter.CENTER)
 
 if platform.system() == "Windows":
 
-    label.place(x=250, y=30)
+    label.place(x=230, y=10)
     select_day_label.place(x=150, y=75)
-    dayList_box.place(x=100, y=100)
+    dayList_box.place(x=120, y=100)
     select_time_label.place(x=400, y=75)
     hrs_label.place(x=410, y=100)
     hrs_entry.place(x=395, y=120)

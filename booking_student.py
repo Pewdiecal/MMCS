@@ -4,7 +4,10 @@ import os
 import platform
 
 top = tkinter.Tk()
-top.geometry("800x600")
+if platform.system() == "Windows":
+    top.geometry("800x680")
+else:
+    top.geometry("800x680")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
@@ -46,9 +49,9 @@ tree.column('#2', width=300, anchor=tkinter.CENTER)
 tree.column('#3', width=100, anchor=tkinter.CENTER)
 
 if platform.system() == "Windows":
-    label.place(x=270, y=30)
-    list_label.place(x=330, y=100)
-    tree.place(x=75, y=150)
+    label.place(x=300, y=30)
+    list_label.place(x=380, y=100)
+    tree.place(x=110, y=150)
     reason_label.place(x=105, y=380)
     reason_text.place(x=165, y=380)
     confirm_btn.place(x=565, y=530)
