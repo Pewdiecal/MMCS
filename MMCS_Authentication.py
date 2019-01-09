@@ -1,6 +1,8 @@
 import tkinter
 import os
 import platform
+from MMCS_DB import validate_user
+
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -10,6 +12,10 @@ top.resizable(False, False)
 
 def AuthFunc():
     print("login")
+    if validate_user(username.get(), password.get()):
+        print("login success")
+    else:
+        print("failed")
 
 
 def registerFunc():

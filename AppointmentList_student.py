@@ -18,7 +18,7 @@ label = tkinter.Label(top, text="Student Appointment Status List", font=label_fo
 labelDetails = tkinter.Label(top, text="Appointment Details", font=label_font_screen)
 labelName = tkinter.Label(top, text="Lecturer Name: ")
 labelTime = tkinter.Label(top, text="Consultation Time: ")
-labelDate = tkinter.Label(top, text="Date: Day")
+labelDate = tkinter.Label(top, text="Date: ")
 labelFaculty = tkinter.Label(top, text="Faculty: ")
 labelRoom = tkinter.Label(top, text="Room Number: ")
 labelReason = tkinter.Label(top, text="Cancellation Reason: ")
@@ -28,11 +28,11 @@ back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width=
 
 
 tree = tker.Treeview(top)
-tree = tker.Treeview(top, columns=('Lecturer Name', 'Date', 'Time', 'Status'))
+tree = tker.Treeview(top, columns=('Lecturer Name', 'Day', 'Time', 'Status'))
 
 tree.heading('#0', text='#')
 tree.heading('#1', text='Lecturer Name')
-tree.heading('#2', text='Date')
+tree.heading('#2', text='Day')
 tree.heading('#3', text='Time')
 tree.heading('#4', text='Status')
 

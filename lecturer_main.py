@@ -1,6 +1,42 @@
 import tkinter
 import os
 import platform
+import threading
+from threading import Thread
+
+
+class UIThread(Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def s1(self):
+        if self.threadName == "add/edit":
+            if platform.system() == "Windows":
+                os.system('addTime_lecturer.py')
+            elif platform.system() == "Linux":
+                os.system('python3')
+            elif platform.system() == "Darwin":
+                os.system('python3 ./addTime_lecturer.py')
+
+    def s2(self):
+        if self.threadName == "student list":
+            if platform.system() == "Windows":
+                os.system('ListStudent_lecturer.py')
+            elif platform.system() == "Linux":
+                os.system('python3')
+            elif platform.system() == "Darwin":
+                os.system('python3 ./ListStudent_lecturer.py')
+
+    def s3(self):
+        if self.threadName == "change pass":
+            if platform.system() == "Windows":
+                os.system('changePass.py')
+            elif platform.system() == "Linux":
+                os.system('python3')
+            elif platform.system() == "Darwin":
+                os.system('python3 ./changePass.py')
+
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -11,22 +47,11 @@ os.chdir(os.path.dirname(__file__))
 
 def add_edit():
     print("add/edit")
-    if platform.system() == "Windows":
-        os.system('addTime_lecturer.py')
-    elif platform.system() == "Linux":
-        os.system('python3')
-    elif platform.system() == "Darwin":
-        os.system('python3 ./addTime_lecturer.py')
+    T1 = Thread(target=ThreadTest().loop1(), args=())
 
 
 def lists():
     print("student list")
-    if platform.system() == "Windows":
-        os.system('ListStudent_lecturer.py')
-    elif platform.system() == "Linux":
-        os.system('python3')
-    elif platform.system() == "Darwin":
-        os.system('python3 ./ListStudent_lecturer.py')
 
 
 def logout():
@@ -39,12 +64,6 @@ def exit():
 
 def changePass():
     print("change pass")
-    if platform.system() == "Windows":
-        os.system('changePass.py')
-    elif platform.system() == "Linux":
-        os.system('python3')
-    elif platform.system() == "Darwin":
-        os.system('python3 ./changePass.py')
 
 
 photo = tkinter.PhotoImage(file="mmu.gif")
@@ -79,7 +98,5 @@ else:
     logout_btn.place(y=510)
     exit_btn.place(x=200, y=510)
     changePass_btn.place(x=610, y=510)
-
-
 
 top.mainloop()
