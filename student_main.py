@@ -8,6 +8,14 @@ top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
 
+def disable_event():
+    top.destroy()
+    print("logout")
+
+
+top.protocol("WM_DELETE_WINDOW", disable_event)
+
+
 def add_edit():
     print("add/edit")
 

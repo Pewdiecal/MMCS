@@ -1,6 +1,7 @@
 import tkinter
 import os
 import platform
+from MMCS_DB import add_new_user
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -15,6 +16,10 @@ def back():
 
 
 def register():
+    if room_entry.get() == "":
+        add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL", pass_entry.get(), var.get())
+    elif len(room_entry.get()) >= 2:
+        add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), room_entry.get(), pass_entry.get(), var.get())
     print("register")
 
 
