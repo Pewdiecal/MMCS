@@ -42,6 +42,7 @@ def AuthFunc():
     if len(username.get()) > 1 and len(password.get()) > 1:
         if validate_user(username.get(), password.get()):
             if get_user_position(get_logged_in_user()) == "LEC":
+
                 p1s = multiprocessing.Process(target=multiProcessWork().s3, args=())
                 p1s.start()
             else:
@@ -56,6 +57,7 @@ def AuthFunc():
 def registerFunc():
     p1 = multiprocessing.Process(target=multiProcessWork().s1, args=())
     p1.start()
+    top.destroy()
     print("register")
 
 
