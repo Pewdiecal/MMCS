@@ -4,7 +4,7 @@ import os
 import platform
 
 top = tkinter.Tk()
-top.geometry("800x600")
+top.geometry("900x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
@@ -35,23 +35,35 @@ cancel_btn = tkinter.Button(top, text="Cancel Appointment", command=cancel, pady
 back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width="20",
                           height="2")
 tree = tker.Treeview(top)
-tree = tker.Treeview(top, columns=('Name', 'Day', 'Time', 'Status'))
+tree = tker.Treeview(top, columns=('Name', 'Day', 'Time', 'ID', 'Status'))
 
 tree.heading('#0', text='#')
 tree.heading('#1', text='Name')
 tree.heading('#2', text='Day')
 tree.heading('#3', text='Time')
-tree.heading('#4', text='Status')
+tree.heading('#4', text='ID')
+tree.heading('#5', text='Status')
 
 tree.column('#0', width="40", anchor=tkinter.CENTER)
 tree.column('#1', width=400, anchor=tkinter.CENTER)
 tree.column('#2', width=100, anchor=tkinter.CENTER)
 tree.column('#3', width=100, anchor=tkinter.CENTER)
 tree.column('#4', width=100, anchor=tkinter.CENTER)
+tree.column('#5', width=100, anchor=tkinter.CENTER)
 
+
+def selectItem(a):
+    curItem = tree.focus()
+    #print(tree.item(curItem))
+    values = tree.item(curItem)
+    stu_ids = values['values']
+    print(stu_ids[3]) # output selected lec's id
+
+
+tree.bind('<Double-Button-1>', selectItem)
 
 for j in range(20):
-    tree.insert("", 0, text=str(j), values=("test", "13/12/18", "1pm", "approved"))
+    tree.insert("", 0, text=str(j), values=("test", "13/12/18", "1pm", "1123345566", "approved"))
 
 
 if platform.system() == "Windows":
@@ -70,17 +82,17 @@ if platform.system() == "Windows":
 
 else:
 
-    label.place(x=220, y=5)
+    label.place(x=260, y=5)
     tree.place(x=30, y=60)
-    labelDetails.place(x=270, y=280)
+    labelDetails.place(x=290, y=280)
     labelName.place(x=35, y=330)
     labelID.place(x=35, y=355)
     labelDate.place(x=35, y=380)
     labelTime.place(x=35, y=405)
     labelStatus.place(x=35, y=430)
     labelReason.place(x=35, y=455)
-    approve_btn.place(x=600, y=550)
-    cancel_btn.place(x=400, y=550)
+    approve_btn.place(x=700, y=550)
+    cancel_btn.place(x=500, y=550)
     back_btn.place(x=10, y=550)
 
 top.mainloop()

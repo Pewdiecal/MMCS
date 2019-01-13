@@ -1,8 +1,8 @@
 import tkinter
 import os
 import platform
-from MMCS_DB import validate_user
-
+from MMCS_DB import validate_user, get_logged_in_user, get_user_position
+import multiprocessing
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -10,22 +10,53 @@ top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
 
+class multiProcessWork():
+
+    def s1(self):
+        if platform.system() == "Windows":
+            os.system('MMCS_registration.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./MMCS_registration.py')
+
+    def s2(self):
+        if platform.system() == "Windows":
+            os.system('student_main.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./student_main.py')
+
+    def s3(self):
+        if platform.system() == "Windows":
+            os.system('lecturer_main.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./lecturer_main.py')
+
+
 def AuthFunc():
     print("login")
-    if validate_user(username.get(), password.get()):
-        print("login success")
+    if len(username.get()) > 1 and len(password.get()) > 1:
+        if validate_user(username.get(), password.get()):
+            if get_user_position(get_logged_in_user()) == "LEC":
+                p1s = multiprocessing.Process(target=multiProcessWork().s3, args=())
+                p1s.start()
+            else:
+                p2s = multiprocessing.Process(target=multiProcessWork().s2, args=())
+                p2s.start()
+        else:
+            messagebox.showinfo("Authentication", "Username or password incorrect.")
     else:
-        print("failed")
+        messagebox.showinfo("Authentication", "Please fill in all your credentials.")
 
 
 def registerFunc():
+    p1 = multiprocessing.Process(target=multiProcessWork().s1, args=())
+    p1.start()
     print("register")
-    if platform.system() == "Windows":
-        os.system('MMCS_registration.py')
-    elif platform.system() == "Linux":
-        os.system('python3')
-    elif platform.system() == "Darwin":
-        os.system('python3 ./MMCS_registration.py')
 
 
 photo = tkinter.PhotoImage(file="mmu.gif")
@@ -59,6 +90,5 @@ else:
     password.place(x=295, y=270)
     login.place(x=300, y=310)
     register.place(x=300, y=410)
-
 
 top.mainloop()

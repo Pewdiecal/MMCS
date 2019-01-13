@@ -3,40 +3,7 @@ import os
 import platform
 import threading
 from threading import Thread
-
-
-class UIThread(Thread):
-
-    def __init__(self):
-        threading.Thread.__init__(self)
-
-    def s1(self):
-        if self.threadName == "add/edit":
-            if platform.system() == "Windows":
-                os.system('addTime_lecturer.py')
-            elif platform.system() == "Linux":
-                os.system('python3')
-            elif platform.system() == "Darwin":
-                os.system('python3 ./addTime_lecturer.py')
-
-    def s2(self):
-        if self.threadName == "student list":
-            if platform.system() == "Windows":
-                os.system('ListStudent_lecturer.py')
-            elif platform.system() == "Linux":
-                os.system('python3')
-            elif platform.system() == "Darwin":
-                os.system('python3 ./ListStudent_lecturer.py')
-
-    def s3(self):
-        if self.threadName == "change pass":
-            if platform.system() == "Windows":
-                os.system('changePass.py')
-            elif platform.system() == "Linux":
-                os.system('python3')
-            elif platform.system() == "Darwin":
-                os.system('python3 ./changePass.py')
-
+import multiprocessing
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -45,13 +12,45 @@ top.resizable(False, False)
 os.chdir(os.path.dirname(__file__))
 
 
+class multiProcessWork():
+
+    def s1(self):
+        if platform.system() == "Windows":
+            os.system('addTime_lecturer.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./addTime_lecturer.py')
+
+    def s2(self):
+
+        if platform.system() == "Windows":
+            os.system('ListStudent_lecturer.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./ListStudent_lecturer.py')
+
+    def s3(self):
+
+        if platform.system() == "Windows":
+            os.system('changePass.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./changePass.py')
+
+
 def add_edit():
     print("add/edit")
-    T1 = Thread(target=ThreadTest().loop1(), args=())
+    p1 = multiprocessing.Process(target=multiProcessWork().s1, args=())
+    p1.start()
 
 
 def lists():
     print("student list")
+    p2 = multiprocessing.Process(target=multiProcessWork().s2, args=())
+    p2.start()
 
 
 def logout():
@@ -64,6 +63,8 @@ def exit():
 
 def changePass():
     print("change pass")
+    p5 = multiprocessing.Process(target=multiProcessWork().s3, args=())
+    p5.start()
 
 
 photo = tkinter.PhotoImage(file="mmu.gif")
