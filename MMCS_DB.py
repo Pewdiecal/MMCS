@@ -159,6 +159,38 @@ def get_lec_booking_details(stu_id, lec_id):
     return c.fetchall()
 
 
+def logout_user():
+    c.execute("""UPDATE user_credentials SET login_status = "Logged Out" WHERE login_status = "Logged In" """)
+    conn.commit()
+
+
+def test_users_insert():
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+               VALUES ("MU2283377", "0000", "Suhaini", "FCI", "BR2004", "LEC"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+               VALUES ("MU4475566", "0000", "Khairi", "FAC", "BR3008", "LEC"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+                   VALUES ("MU9934499", "0000", "Dr. Ng", "FOE", "BR1028", "LEC"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+                   VALUES ("MU4475566", "0000", "Willie the poh", "FCM", "BR2904", "LEC"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+                   VALUES ("1184475566", "0000", "Nicholas", "FCM", NULL, "STU"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+                       VALUES ("1109999999", "0000", "Aik Seng", "FAC", NULL, "STU"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+                       VALUES ("1171102233", "0000", "Faris", "FOE", NULL, "STU"); """)
+    conn.commit()
+    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
+                       VALUES ("1181192233", "0000", "Jing Guan", "FCI", NULL, "STU"); """)
+    conn.commit()
+
+
 c.execute("""CREATE TABLE IF NOT EXISTS lec_available_time(
             user_id VARCHAR(45) NOT NULL,
             lec_day VARCHAR(45) NOT NULL,
