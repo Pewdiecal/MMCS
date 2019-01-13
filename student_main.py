@@ -1,6 +1,7 @@
 import tkinter
 import os
 import platform
+import multiprocessing
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -16,12 +17,43 @@ def disable_event():
 top.protocol("WM_DELETE_WINDOW", disable_event)
 
 
+class multiProcessWork():
+
+    def s1(self):
+        if platform.system() == "Windows":
+            os.system('addApointment_student.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./addApointment_student.py')
+
+    def s2(self):
+        if platform.system() == "Windows":
+            os.system('AppointmentList_student.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./AppointmentList_student.py')
+
+    def s3(self):
+        if platform.system() == "Windows":
+            os.system('changePass.py')
+        elif platform.system() == "Linux":
+            os.system('python3')
+        elif platform.system() == "Darwin":
+            os.system('python3 ./changePass.py')
+
+
 def add_edit():
-    print("add/edit")
+    print("place appointment")
+    p1 = multiprocessing.Process(target=multiProcessWork().s1, args=())
+    p1.start()
 
 
 def lists():
     print("student list")
+    p2 = multiprocessing.Process(target=multiProcessWork().s2, args=())
+    p2.start()
 
 
 def logout():
@@ -34,6 +66,8 @@ def exit():
 
 def changePass():
     print("change pass")
+    p3 = multiprocessing.Process(target=multiProcessWork().s3, args=())
+    p3.start()
 
 
 photo = tkinter.PhotoImage(file="mmu.gif")

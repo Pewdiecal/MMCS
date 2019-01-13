@@ -1,7 +1,8 @@
 import tkinter
+from tkinter import messagebox
 import os
 import platform
-from MMCS_DB import add_new_user
+from MMCS_DB import add_new_user, check_user_id
 
 top = tkinter.Tk()
 top.geometry("800x600")
@@ -16,10 +17,76 @@ def back():
 
 
 def register():
-    if room_entry.get() == "":
-        add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL", pass_entry.get(), var.get())
-    elif len(room_entry.get()) >= 2:
-        add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), room_entry.get(), pass_entry.get(), var.get())
+    if var.get() == "LEC":
+
+        if len(fullname_entry.get()) <= 1 or len(userID_entry.get()) <= 1 or len(var_faculty.get()) <= 1 or len(
+                room_entry.get()) <= 1:
+            messagebox.showerror("Error", "Please fill up all the necessary informations.")
+        else:
+            if len(pass_entry.get()) >= 8:
+                if pass_entry.get() == confirmPass_entry.get():
+                    if check_user_id(userID_entry.get()):
+                        if room_entry.get() == "":
+                            add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
+                                         pass_entry.get(), var.get())
+                            messagebox.showinfo("Registration", "Registration successful.")
+
+                            top.destroy()
+
+                        elif len(room_entry.get()) >= 2:
+                            add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), room_entry.get(),
+                                         pass_entry.get(), var.get())
+                            messagebox.showinfo("Registration", "Registration successful.")
+
+                            top.destroy()
+
+                    else:
+                        messagebox.showerror("Error",
+                                             "The User ID had already exists in the database. Please enter a different ID.")
+                else:
+                    messagebox.showerror("Error",
+                                         "Password does not match. Please try again.")
+            else:
+                messagebox.showerror("Error",
+                                     "Password must be atleast 8 characters long. Please try again.")
+    elif var.get() == "STU":
+
+        if len(fullname_entry.get()) >= 1 or len(userID_entry.get()) >= 1 or len(var_faculty.get()) >= 1:
+            if len(pass_entry.get()) >= 8:
+                if pass_entry.get() == confirmPass_entry.get():
+                    if check_user_id(userID_entry.get()):
+                        if room_entry.get() == "":
+                            add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
+                                         pass_entry.get(), var.get())
+
+                            messagebox.showinfo("Registration", "Registration successful.")
+
+                            top.destroy()
+
+                        elif len(room_entry.get()) >= 2:
+
+                            add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), room_entry.get(),
+                                         pass_entry.get(), var.get())
+
+                            messagebox.showinfo("Registration", "Registration successful.")
+
+                            top.destroy()
+
+                    else:
+                        messagebox.showerror("Error",
+                                             "The User ID had already exists in the database. Please enter a different ID.")
+                else:
+                    messagebox.showerror("Error",
+                                         "Password does not match. Please try again.")
+            else:
+                messagebox.showerror("Error",
+                                     "Password must be atleast 8 characters long. Please try again.")
+        else:
+            messagebox.showerror("Error", "Please fill up all the necessary informations.")
+
+    else:
+        messagebox.showerror("Error", "Please fill up all the necessary informations.")
+
     print("register")
 
 
@@ -61,7 +128,7 @@ back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width=
 register_btn = tkinter.Button(top, text="Register", command=register, pady=4, padx=4, fg='green', width="20",
                               height="5")
 
-if platform.system() == "Windows" :
+if platform.system() == "Windows":
     labelPhoto.place(x=355, y=20)
     labelTitle.place(x=310, y=120)
     labelScreen.place(x=230, y=195)
@@ -113,7 +180,6 @@ else:
     student_radio.place(x=430, y=475)
     back_btn.place(x=170, y=505)
     register_btn.place(x=410, y=505)
-
 
 var.set(0)
 var_faculty.set(0)

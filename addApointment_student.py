@@ -43,6 +43,17 @@ tree.column('#0', width=400, anchor=tkinter.CENTER)
 tree.column('#1', width=100, anchor=tkinter.CENTER)
 tree.column('#2', width=100, anchor=tkinter.CENTER)
 
+
+def selectItem(a):
+    curItem = tree.focus()
+    #print(tree.item(curItem))
+    values = tree.item(curItem)
+    stu_ids = values['values']
+    print(stu_ids[3]) # output selected lec's id
+
+
+tree.bind('<Double-Button-1>', selectItem)
+
 if platform.system() == "Windows":
     label.place(x=220, y=20)
     search.place(x=150, y=90)
