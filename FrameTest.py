@@ -6,7 +6,7 @@ from tkinter import ttk as tker
 from MMCS_DB import add_new_user, check_user_id
 
 top = tkinter.Tk()
-top.geometry("1000x700")
+top.geometry("700x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 
@@ -25,7 +25,8 @@ class mainFrames(tkinter.Tk):
         container.grid_columnconfigure(0, weight=1)
         self.withdraw()
         self.frames = {}
-        for F in (MMCS_Auth, addTime_lec, appointmentList_lec, booking_student, change_pass, listStudent_lecturer, MMCS_registration):
+        for F in (MMCS_Auth, addTime_lec, appointmentList_lec, booking_student,
+                  change_pass, listStudent_lecturer, MMCS_registration):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -35,7 +36,7 @@ class mainFrames(tkinter.Tk):
             # will be the one that is visible.
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame("change_pass")
+        self.show_frame("MMCS_registration")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -82,7 +83,7 @@ class MMCS_Auth(tkinter.Frame):
         password = tkinter.Entry(self, show="*", bd=5)
 
         if platform.system() == "Windows":
-            labelPhoto.place(x=335, y=30)
+          #  labelPhoto.place(x=335, y=30)
             labelTitle.place(x=280, y=140)
             lableUser.place(x=275, y=234)
             username.place(x=350, y=230)
@@ -213,7 +214,7 @@ class appointmentList_lec(tkinter.Frame):
     def __init__(self, parent, controller):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
-
+        top.geometry("895x600")
         def back():
             print("back")
 
@@ -262,9 +263,9 @@ class appointmentList_lec(tkinter.Frame):
         tree.insert("", 'end', text=str("4"), values=("test4", "13/12/18", "1pm", "MU9090", "approved"))
 
         if platform.system() == "Windows":
-            label.place(x=108, y=5)
+            label.place(x=170, y=5)
             tree.place(x=30, y=60)
-            labelDetails.place(x=220, y=280)
+            labelDetails.place(x=275, y=280)
             labelName.place(x=35, y=330)
             labelDate.place(x=35, y=355)
             labelTime.place(x=35, y=380)
@@ -311,9 +312,9 @@ class booking_student(tkinter.Frame):
             reason_text = tkinter.Text(self, width=80, height=8, highlightbackground="grey")
 
         confirm_btn = tkinter.Button(self, text="Confirm", command=confirm, pady=4, padx=4, width="20",
-                                     height="5", fg="green")
+                                     height="2", fg="green")
         back_btn = tkinter.Button(self, text="Back", command=back, pady=4, padx=4, width="20",
-                                  height="5")
+                                  height="2")
 
         tree = tker.Treeview(self)
         tree = tker.Treeview(self, columns=('Day', 'Time', 'Duration'))
@@ -329,13 +330,13 @@ class booking_student(tkinter.Frame):
         tree.column('#3', width=100, anchor=tkinter.CENTER)
 
         if platform.system() == "Windows":
-            label.place(x=300, y=30)
+            label.place(x=275, y=30)
             list_label.place(x=380, y=100)
             tree.place(x=110, y=150)
             reason_label.place(x=105, y=380)
             reason_text.place(x=165, y=380)
-            confirm_btn.place(x=565, y=530)
-            back_btn.place(x=365, y=530)
+            confirm_btn.place(x=595, y=520)
+            back_btn.place(x=430, y=520)
 
         else:
             label.place(x=270, y=30)
@@ -353,6 +354,7 @@ class change_pass(tkinter.Frame):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
 
+        top.geometry("800x600")
         def back():
             print("back")
 
@@ -361,7 +363,7 @@ class change_pass(tkinter.Frame):
 
         photo = tkinter.PhotoImage(file="mmu.gif")
         #labelPhoto = tkinter.Label(top, image=photo, width="100", height="100")
-        back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width="20",
+        back_btn = tkinter.Button(self, text="Back", command=back, pady=4, padx=4, width="20",
                                   height="5")
         labelfont = ('Arial', 50, 'bold')
         label_font_screen = ('Arial', 30)
@@ -469,6 +471,8 @@ class listStudent_lecturer(tkinter.Frame):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
 
+        top.geometry("900x600")
+        
         def approve():
             print("approve")
 
