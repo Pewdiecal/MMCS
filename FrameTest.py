@@ -554,7 +554,7 @@ class listStudent_lecturer(tkinter.Frame):
             approve_btn.place(x=600, y=550)
             cancel_btn.place(x=400, y=550)
             back_btn.place(x=10, y=550)
-
+#sdadasdasdasdasd
         else:
 
             label.place(x=260, y=5)
@@ -769,7 +769,7 @@ class student_main(tkinter.Frame):
         def exit():
             logout_user()
             top.destroy()
-            print("exit")
+            print("logout")
 
         def changePass():
             print("change pass")
