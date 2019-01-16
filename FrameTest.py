@@ -593,18 +593,12 @@ class MMCS_registration(tkinter.Frame):
                     if len(pass_entry.get()) >= 8:
                         if pass_entry.get() == confirmPass_entry.get():
                             if check_user_id(userID_entry.get()):
-                                if room_entry.get() == "":
-                                    add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
-                                                 pass_entry.get(), var.get())
-                                    messagebox.showinfo("Registration", "Registration successful.")
-                                    controller.show_frame("MMCS_Auth")
 
-                                elif len(room_entry.get()) >= 2:
-                                    add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(),
-                                                 room_entry.get(),
-                                                 pass_entry.get(), var.get())
-                                    messagebox.showinfo("Registration", "Registration successful.")
-                                    controller.show_frame("MMCS_Auth")
+                                add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(),
+                                                room_entry.get(),
+                                                pass_entry.get(), var.get())
+                                messagebox.showinfo("Registration", "Registration successful.")
+                                controller.show_frame("MMCS_Auth")
                             else:
                                 messagebox.showerror("Error",
                                                      "The User ID had already exists in the database. Please enter a different ID.")
@@ -620,21 +614,12 @@ class MMCS_registration(tkinter.Frame):
                     if len(pass_entry.get()) >= 8:
                         if pass_entry.get() == confirmPass_entry.get():
                             if check_user_id(userID_entry.get()):
-                                if room_entry.get() == "":
-                                    add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
-                                                 pass_entry.get(), var.get())
 
-                                    messagebox.showinfo("Registration", "Registration successful.")
-                                    controller.show_frame("MMCS_Auth")
+                                add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
+                                                pass_entry.get(), var.get())
 
-                                elif len(room_entry.get()) >= 2:
-
-                                    add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(),
-                                                 room_entry.get(),
-                                                 pass_entry.get(), var.get())
-
-                                    messagebox.showinfo("Registration", "Registration successful.")
-                                    controller.show_frame("MMCS_Auth")
+                                messagebox.showinfo("Registration", "Registration successful.")
+                                controller.show_frame("MMCS_Auth")
 
                             else:
                                 messagebox.showerror("Error",
@@ -769,7 +754,7 @@ class student_main(tkinter.Frame):
         def exit():
             logout_user()
             top.destroy()
-            print("exit")
+            print("logout")
 
         def changePass():
             print("change pass")
