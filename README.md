@@ -83,6 +83,19 @@ Output : [('Suhaini', '13/11/15', '13', '15', 'approved', 'FAC', 'BR434', 'The r
 Example : get_lec_booking_details("1171102288", "MU1344555")
 
 
+function name : update_approval_status(stu_id, user_id, date, boolean)
+Info : Update approval status for lecturer to students
+Arguments : stu_id = student id, user_id = lecturer's id, date = current booking date, boolean = True (Approved), False (reject)
+Example: update_approval_status("1171109988", "MU123456", "13/1/2018", True)
+
+
+function name : search_lecture(lec_name)
+Info : Search for lecturer's name and populate the name list that contains within the inputed keywords.
+Arguments : lec_name = lecturer's name
+Example : search_lecture("cal")
+output : [('CALCAL',), ('PewDieCal',)]
+
+
 function name : logout_user()
 Info : To log the user out.
 
