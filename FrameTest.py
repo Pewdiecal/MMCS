@@ -9,6 +9,7 @@ top = tkinter.Tk()
 top.geometry("700x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
+photo = tkinter.PhotoImage(file="mmu.gif")
 
 
 class mainFrames(tkinter.Tk):
@@ -71,8 +72,7 @@ class MMCS_Auth(tkinter.Frame):
             print("register")
             controller.show_frame("MMCS_registration")
 
-        photo = tkinter.PhotoImage(file="mmu.gif")
-        #       labelPhoto = tkinter.Label(top, image=photo, width="100", height="100")
+        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
         login = tkinter.Button(self, text="Login", command=AuthFunc, pady=4, padx=4, width="20", height="5", fg='green')
         register = tkinter.Button(self, text="New User", command=registerFunc, pady=4, padx=4, width="20",
                                   height="5")
@@ -84,7 +84,7 @@ class MMCS_Auth(tkinter.Frame):
         password = tkinter.Entry(self, show="*", bd=5)
 
         if platform.system() == "Windows":
-            #  labelPhoto.place(x=335, y=30)
+            labelPhoto.place(x=335, y=30)
             labelTitle.place(x=280, y=140)
             lableUser.place(x=275, y=234)
             username.place(x=350, y=230)
@@ -94,7 +94,7 @@ class MMCS_Auth(tkinter.Frame):
             register.place(x=300, y=410)
 
         else:
-            #            labelPhoto.place(x=445, y=30)
+            labelPhoto.place(x=445, y=30)
             labelTitle.place(x=413, y=140)
             lableUser.place(x=325, y=234)
             username.place(x=400, y=230)
@@ -369,8 +369,7 @@ class change_pass(tkinter.Frame):
         def confirm():
             print("confirm")
 
-        photo = tkinter.PhotoImage(file="mmu.gif")
-        # labelPhoto = tkinter.Label(top, image=photo, width="100", height="100")
+        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
         back_btn = tkinter.Button(self, text="Back", command=back, pady=4, padx=4, width="20",
                                   height="5")
         labelfont = ('Arial', 50, 'bold')
@@ -387,7 +386,7 @@ class change_pass(tkinter.Frame):
                                      height="5", fg='green')
 
         if platform.system() == "Windows":
-            # labelPhoto.place(x=360, y=20)
+            labelPhoto.place(x=360, y=20)
             back_btn.place(x=200, y=370)
             labelTitle.place(x=310, y=120)
             labelScreen.place(x=250, y=190)
@@ -401,7 +400,7 @@ class change_pass(tkinter.Frame):
 
         else:
 
-            # labelPhoto.place(x=335, y=40)
+            labelPhoto.place(x=335, y=40)
             back_btn.place(x=200, y=370)
             labelTitle.place(x=310, y=140)
             labelScreen.place(x=250, y=200)
@@ -442,8 +441,7 @@ class lecturer_main(tkinter.Frame):
             print("change pass")
             controller.show_frame("change_pass")
 
-        photo = tkinter.PhotoImage(file="mmu.gif")
-        # labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
+        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
         label_font = ('Arial', 20, 'bold')
         labelfont = ('Arial', 50, 'bold')
         labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
@@ -459,7 +457,7 @@ class lecturer_main(tkinter.Frame):
                                         height="5")
 
         if platform.system() == "Windows":
-            # labelPhoto.place(x=360, y=30)
+            labelPhoto.place(x=360, y=30)
             labelTitle.place(x=310, y=130)
             label_user.place(y=200)
             add_edit_btn.place(x=360, y=270)
@@ -469,7 +467,7 @@ class lecturer_main(tkinter.Frame):
             changePass_btn.place(x=640, y=510)
 
         else:
-            # labelPhoto.place(x=335, y=30)
+            labelPhoto.place(x=335, y=30)
             labelTitle.place(x=310, y=130)
             label_user.place(y=200)
             add_edit_btn.place(x=300, y=270)
@@ -645,8 +643,7 @@ class MMCS_registration(tkinter.Frame):
             else:
                 room_entry.configure(state="normal")
 
-        photo = tkinter.PhotoImage(file="mmu.gif")
-        # labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
+        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
         labelfont = ('Arial', 50, 'bold')
         label_font_screen = ('Arial', 30)
         labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
@@ -676,7 +673,7 @@ class MMCS_registration(tkinter.Frame):
                                       height="5")
 
         if platform.system() == "Windows":
-            # labelPhoto.place(x=355, y=20)
+            labelPhoto.place(x=355, y=20)
             labelTitle.place(x=310, y=120)
             labelScreen.place(x=230, y=195)
             labelName.place(x=250, y=254)
@@ -703,7 +700,7 @@ class MMCS_registration(tkinter.Frame):
 
         else:
 
-            # labelPhoto.place(x=335, y=30)
+            labelPhoto.place(x=335, y=30)
             labelTitle.place(x=310, y=140)
             labelScreen.place(x=230, y=200)
             labelName.place(x=250, y=254)
@@ -760,8 +757,7 @@ class student_main(tkinter.Frame):
             print("change pass")
             controller.show_frame("change_pass")
 
-        photo = tkinter.PhotoImage(file="mmu.gif")
-        # labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
+        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
         label_font = ('Arial', 20, 'bold')
         labelfont = ('Arial', 50, 'bold')
         labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
@@ -777,7 +773,7 @@ class student_main(tkinter.Frame):
                                         height="5")
 
         if platform.system() == "Windows":
-            #  labelPhoto.place(x=360, y=30)
+            labelPhoto.place(x=360, y=30)
             labelTitle.place(x=310, y=130)
             label_user.place(y=200)
             add_edit_btn.place(x=360, y=270)
@@ -787,7 +783,7 @@ class student_main(tkinter.Frame):
             changePass_btn.place(x=640, y=510)
 
         else:
-            #  labelPhoto.place(x=335, y=30)
+            labelPhoto.place(x=335, y=30)
             labelTitle.place(x=310, y=130)
             label_user.place(y=200)
             add_edit_btn.place(x=300, y=270)

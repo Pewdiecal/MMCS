@@ -48,9 +48,9 @@ def add_new_user(usr_name, usr_id, usr_fac, usr_room, usr_pass, usr_position):
 
 
 def validate_user(user_id, user_pass):
+    c.execute("""UPDATE user_credentials SET login_status = "Logged Out"; """)
     c.execute("""SELECT count(user_id) FROM user_credentials WHERE user_id = """ + '"' + user_id + '"'
               + " AND user_pass = " + '"' + user_pass + '";')
-    c.execute("""UPDATE user_credentials SET login_status = "Logged Out"; """)
     respond = c.fetchone()
     print("MMCS_DB_validate_user : ", respond[0])
     if respond[0] == 0:
