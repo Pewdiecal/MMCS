@@ -16,6 +16,29 @@ c.execute("""CREATE TABLE IF NOT EXISTS user_credentials(
             """)
 
 
+c.execute("""CREATE TABLE IF NOT EXISTS lec_available_time(
+            user_id VARCHAR(45) NOT NULL,
+            lec_day VARCHAR(45) NOT NULL,
+            lec_time_start VARCHAR(45) NOT NULL,
+            lec_time_end VARCHAR(45) NOT NULL,
+            lec_date DATE NOT NULL,
+            time_availability TEXT NOT NULL);
+            """)
+
+c.execute("""CREATE TABLE IF NOT EXISTS lec_bookings(
+            user_id VARCHAR(45) NOT NULL,
+            book_day VARCHAR(45) NOT NULL,
+            book_time_start VARCHAR(45) NOT NULL,
+            book_time_end VARCHAR(45) NOT NULL,
+            book_reason TEXT NOT NULL,
+            book_student TEXT NOT NULL,
+            stu_id VARCHAR(45) NOT NULL,
+            book_date DATE NOT NULL,
+            book_status VARCHAR NOT NULL,
+            reason_cancel TEXT);
+            """)
+
+
 def add_new_user(usr_name, usr_id, usr_fac, usr_room, usr_pass, usr_position):
     c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
                VALUES (""" + '"' + usr_id + '"' + """, """ + '"' + usr_pass + '"' + """, """ + '"' + usr_name + '"'
@@ -27,9 +50,11 @@ def add_new_user(usr_name, usr_id, usr_fac, usr_room, usr_pass, usr_position):
 def validate_user(user_id, user_pass):
     c.execute("""SELECT count(user_id) FROM user_credentials WHERE user_id = """ + '"' + user_id + '"'
               + " AND user_pass = " + '"' + user_pass + '";')
+    c.execute("""UPDATE user_credentials SET login_status = "Logged Out"; """)
     respond = c.fetchone()
     print("MMCS_DB_validate_user : ", respond[0])
     if respond[0] == 0:
+
         return False
     else:
         c.execute("""SELECT user_id FROM user_credentials WHERE user_id = """ + '"' + user_id + '"'
@@ -59,6 +84,15 @@ def add_bookings(user_id, book_day, book_time, book_time_start, book_time_end, b
         + '"' + stu_id + '"' + "," + '"' + book_date + '"' + "," + '"' + book_status + '"' + ","
         + '"' + reason_cancel + '"' + ");")
     conn.commit()
+
+
+def update_approval_status(stu_id, user_id, date, boolean):
+    if boolean:
+        c.execute("""UPDATE lec_bookings SET book_status = "Approved" WHERE stu_id = """ + '"' + stu_id + '"'
+                  + " AND user_id = " + '"' + user_id + '"' + " AND book_date = " + '"' + date + '";')
+    else:
+        c.execute("""UPDATE lec_bookings SET book_status = "Rejected" WHERE stu_id = """ + '"' + stu_id + '"'
+                  + " AND user_id = " + '"' + user_id + '"' + " AND book_date = " + '"' + date + '";')
 
 
 def get_logged_in_user():
@@ -108,7 +142,7 @@ def get_user_position(user_id):
 
 def get_lec_free_time(user_id):
     c.execute("""SELECT lec_day, lec_time_start, lec_time_end, lec_date, time_availability 
-                FROM lec_available_time WHERE user_id = """ + '"' + user_id + '" AND time_availability = "available";')
+                FROM lec_available_time WHERE user_id = """ + '"' + user_id + '" AND time_availability = "Available";')
     respond = c.fetchall()
     for i in respond:
         print("MMCS_DB_Lec_Free_Time : ", i)
@@ -159,9 +193,15 @@ def get_lec_booking_details(stu_id, lec_id):
     return c.fetchall()
 
 
+def search_lecture(lec_name):
+    c.execute("""SELECT user_name FROM user_credentials WHERE user_name LIKE """ + "'%" + lec_name + "%'")
+    return c.fetchall()
+
+
 def logout_user():
     c.execute("""UPDATE user_credentials SET login_status = "Logged Out" WHERE login_status = "Logged In" """)
     conn.commit()
+    conn.close()
 
 
 def test_users_insert():
@@ -191,30 +231,6 @@ def test_users_insert():
     conn.commit()
 
 
-c.execute("""CREATE TABLE IF NOT EXISTS lec_available_time(
-            user_id VARCHAR(45) NOT NULL,
-            lec_day VARCHAR(45) NOT NULL,
-            lec_time_start VARCHAR(45) NOT NULL,
-            lec_time_end VARCHAR(45) NOT NULL,
-            lec_date DATE NOT NULL,
-            time_availability TEXT NOT NULL);
-            """)
-
-c.execute("""CREATE TABLE IF NOT EXISTS lec_bookings(
-            user_id VARCHAR(45) NOT NULL,
-            book_day VARCHAR(45) NOT NULL,
-            book_time_start VARCHAR(45) NOT NULL,
-            book_time_end VARCHAR(45) NOT NULL,
-            book_reason TEXT NOT NULL,
-            book_student TEXT NOT NULL,
-            stu_id VARCHAR(45) NOT NULL,
-            book_date DATE NOT NULL,
-            book_status VARCHAR NOT NULL,
-            reason_cancel TEXT);
-            """)
-
 conn.commit()
 
 
-def logout():
-    conn.close()
