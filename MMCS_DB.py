@@ -95,6 +95,19 @@ def update_approval_status(stu_id, user_id, date, boolean):
                   + " AND user_id = " + '"' + user_id + '"' + " AND book_date = " + '"' + date + '";')
 
 
+def update_user_password(user_id, old_pass, new_pass):
+    c.execute("""SELECT count(user_pass) FROM user_credentials WHERE user_id = """ + '"' + user_id + '"'
+              + "AND user_pass = " + '"' + old_pass + '";')
+    respond = c.fetchone()
+    if respond[0] == 1:
+        c.execute("""UPDATE user_credentials SET user_pass = """ + '"' + new_pass + '"' + "WHERE user_id = "
+                  + '"' + user_id + '";')
+        conn.commit()
+        return True
+    else:
+        return False
+
+
 def get_logged_in_user():
     c.execute("""SELECT user_id FROM user_credentials WHERE login_status = "Logged In"; """)
     respond = c.fetchone()
