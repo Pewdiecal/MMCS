@@ -364,9 +364,34 @@ class change_pass(tkinter.Frame):
         top.geometry("800x600")
 
         def back():
+            if get_user_position(get_logged_in_user()) == "LEC":
+                controller.show_frame("lecturer_main")
+            else:
+                controller.show_frame("student_main")
             print("back")
 
         def confirm():
+            if oldPass_entry.get() != "" and newPass_entry.get() != "" and confirmPass_entry.get() != "":
+                if len(newPass_entry.get()) >= 8:
+                    if newPass_entry.get() == confirmPass_entry.get():
+                        if update_user_password(get_logged_in_user(), oldPass_entry.get(), newPass_entry.get()):
+                            messagebox.showinfo("Credential Settings", "Password Changed.")
+                            oldPass_entry.delete(0, 'end')
+                            newPass_entry.delete(0, 'end')
+                            confirmPass_entry.delete(0, 'end')
+                            if get_user_position(get_logged_in_user()) == "LEC":
+                                controller.show_frame("lecturer_main")
+                            else:
+                                controller.show_frame("student_main")
+                        else:
+                            messagebox.showerror("Credential Settings", "Invalid old password.")
+                    else:
+                        messagebox.showerror("Credential Settings",
+                                             "New password does not match with confirm password.")
+                else:
+                    messagebox.showerror("Credential Settings", "Password must be at least 8 characters.")
+            else:
+                messagebox.showerror("Credential Settings", "Please fill in all your credentials.")
             print("confirm")
 
         labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
@@ -445,7 +470,7 @@ class lecturer_main(tkinter.Frame):
         label_font = ('Arial', 20, 'bold')
         labelfont = ('Arial', 50, 'bold')
         labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
-        label_user = tkinter.Label(self, text="Welcome, USER_NAME", font=label_font)
+        label_user = tkinter.Label(self, text="Welcome, " + get_user_name(get_logged_in_user()), font=label_font)
         add_edit_btn = tkinter.Button(self, text="Add/Edit Schedule", command=add_edit, pady=4, padx=4, width="20",
                                       height="5")
         student_list_btn = tkinter.Button(self, text="List Of Students", command=lists, pady=4, padx=4, width="20",
@@ -761,7 +786,7 @@ class student_main(tkinter.Frame):
         label_font = ('Arial', 20, 'bold')
         labelfont = ('Arial', 50, 'bold')
         labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
-        label_user = tkinter.Label(self, text="Welcome, USER_NAME", font=label_font)
+        label_user = tkinter.Label(self, text="Welcome, " + get_user_name(get_logged_in_user()), font=label_font)
         add_edit_btn = tkinter.Button(self, text="Place Appointment", command=add_edit, pady=4, padx=4, width="20",
                                       height="5")
         student_list_btn = tkinter.Button(self, text="Check Status", command=lists, pady=4, padx=4, width="20",
