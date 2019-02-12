@@ -4,12 +4,66 @@ import platform
 from tkinter import messagebox
 from tkinter import ttk as tker
 from MMCS_DB import *
+from datetime import date
+import calendar
 
 top = tkinter.Tk()
-top.geometry("700x600")
+top.geometry("900x600")
 top.title("Multimedia Consultation Software")
 top.resizable(False, False)
 photo = tkinter.PhotoImage(file="mmu.gif")
+
+
+def MMCS_Auth():
+    def AuthFunc():
+        print("login")
+        if len(username.get()) > 1 and len(password.get()) > 1:
+            if validate_user(username.get(), password.get()):
+                for widget in top.winfo_children():
+                    widget.destroy()
+                mainFrames()
+            else:
+                messagebox.showinfo("Authentication", "Username or password incorrect.")
+
+        else:
+            messagebox.showinfo("Authentication", "Please fill in all your credentials.")
+
+    def registerFunc():
+        for widget in top.winfo_children():
+            widget.destroy()
+        MMCS_registration()
+        print("register")
+
+    labelPhoto = tkinter.Label(top, image=photo, width="100", height="100")
+    login = tkinter.Button(top, text="Login", command=AuthFunc, pady=4, padx=4, width="20", height="5", fg='green')
+    register = tkinter.Button(top, text="New User", command=registerFunc, pady=4, padx=4, width="20",
+                              height="5")
+    lableUser = tkinter.Label(top, text="Username")
+    lablePass = tkinter.Label(top, text="Password")
+    labelfont = ('Arial', 50, 'bold')
+    labelTitle = tkinter.Label(top, text="MMCS", font=labelfont)
+    username = tkinter.Entry(top, bd=5)
+    password = tkinter.Entry(top, show="*", bd=5)
+
+    if platform.system() == "Windows":
+        labelPhoto.place(x=335, y=30)
+        labelTitle.place(x=280, y=140)
+        lableUser.place(x=275, y=234)
+        username.place(x=350, y=230)
+        lablePass.place(x=275, y=275)
+        password.place(x=350, y=270)
+        login.place(x=300, y=310)
+        register.place(x=300, y=410)
+
+    else:
+        labelPhoto.place(x=445, y=30)
+        labelTitle.place(x=413, y=140)
+        lableUser.place(x=325, y=234)
+        username.place(x=400, y=230)
+        lablePass.place(x=325, y=275)
+        password.place(x=400, y=270)
+        login.place(x=405, y=310)
+        register.place(x=405, y=410)
 
 
 class mainFrames(tkinter.Tk):
@@ -24,84 +78,39 @@ class mainFrames(tkinter.Tk):
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
-        self.withdraw()
         self.frames = {}
-        for F in (MMCS_Auth, addTime_lec, appointmentList_stu, booking_student,
-                  change_pass, listStudent_lecturer, MMCS_registration, student_main, lecturer_main,
-                  addAppointment_stu):
-            page_name = F.__name__
-            frame = F(parent=container, controller=self)
-            self.frames[page_name] = frame
+        self.update()
+        self.destroy()
+        if get_user_position(get_logged_in_user()) == "LEC":  # launch required frames according to user
+            for F in (addTime_lec, change_pass, listStudent_lecturer, lecturer_main):
+                page_name = F.__name__
+                frame = F(parent=container, controller=self)
+                self.frames[page_name] = frame
 
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="nsew")
+                # put all of the pages in the same location;
+                # the one on the top of the stacking order
+                # will be the one that is visible.
+                frame.grid(row=0, column=0, sticky="nsew")
+            self.show_frame("lecturer_main")
+        else:
+            for F in (appointmentList_stu, booking_student,
+                      change_pass, student_main,
+                      addAppointment_stu):
+                page_name = F.__name__
+                frame = F(parent=container, controller=self)
+                self.frames[page_name] = frame
 
-        self.show_frame("MMCS_Auth")
+                # put all of the pages in the same location;
+                # the one on the top of the stacking order
+                # will be the one that is visible.
+                frame.grid(row=0, column=0, sticky="nsew")
+            self.show_frame("student_main")
 
     def show_frame(self, page_name):
+
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
         frame.tkraise()
-
-
-class MMCS_Auth(tkinter.Frame):
-
-    def __init__(self, parent, controller):
-        tkinter.Frame.__init__(self, parent)
-        self.controller = controller
-
-        def AuthFunc():
-            print("login")
-            if len(username.get()) > 1 and len(password.get()) > 1:
-                if validate_user(username.get(), password.get()):
-                    if get_user_position(get_logged_in_user()) == "LEC":
-
-                        controller.show_frame("lecturer_main")
-                    else:
-
-                        controller.show_frame("student_main")
-                else:
-                    messagebox.showinfo("Authentication", "Username or password incorrect.")
-            else:
-                messagebox.showinfo("Authentication", "Please fill in all your credentials.")
-
-        def registerFunc():
-
-            print("register")
-            controller.show_frame("MMCS_registration")
-
-        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
-        login = tkinter.Button(self, text="Login", command=AuthFunc, pady=4, padx=4, width="20", height="5", fg='green')
-        register = tkinter.Button(self, text="New User", command=registerFunc, pady=4, padx=4, width="20",
-                                  height="5")
-        lableUser = tkinter.Label(self, text="Username")
-        lablePass = tkinter.Label(self, text="Password")
-        labelfont = ('Arial', 50, 'bold')
-        labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
-        username = tkinter.Entry(self, bd=5)
-        password = tkinter.Entry(self, show="*", bd=5)
-
-        if platform.system() == "Windows":
-            labelPhoto.place(x=335, y=30)
-            labelTitle.place(x=280, y=140)
-            lableUser.place(x=275, y=234)
-            username.place(x=350, y=230)
-            lablePass.place(x=275, y=275)
-            password.place(x=350, y=270)
-            login.place(x=300, y=310)
-            register.place(x=300, y=410)
-
-        else:
-            labelPhoto.place(x=445, y=30)
-            labelTitle.place(x=413, y=140)
-            lableUser.place(x=325, y=234)
-            username.place(x=400, y=230)
-            lablePass.place(x=325, y=275)
-            password.place(x=400, y=270)
-            login.place(x=405, y=310)
-            register.place(x=405, y=410)
 
 
 class addTime_lec(tkinter.Frame):
@@ -110,7 +119,14 @@ class addTime_lec(tkinter.Frame):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
 
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
         def add():
+            getDate()
+            day = dayList_box.get(dayList_box.curselection())
+            time_start = hrs_entry.get() + ':' + min_entry.get()
+            time_end = hrs2_entry.get() + ':' + mins2_entry.get()
+            add_lec_time(get_logged_in_user(), day, time_start, time_end, )
             print("add")
 
         def remove():
@@ -212,12 +228,11 @@ class addTime_lec(tkinter.Frame):
             tree.place(x=200, y=290)
 
 
-class appointmentList_stu(tkinter.Frame):
+class appointmentList_stu(tkinter.Frame):  # CRASH
 
     def __init__(self, parent, controller):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
-        top.geometry("895x600")
 
         def back():
             print("back")
@@ -246,7 +261,7 @@ class appointmentList_stu(tkinter.Frame):
         tree.heading('#4', text='ID')
         tree.heading('#5', text='Status')
 
-        tree.column('#0', width="40", anchor=tkinter.CENTER)
+        tree.column('#0', width=40, anchor=tkinter.CENTER)
         tree.column('#1', width=400, anchor=tkinter.CENTER)
         tree.column('#2', width=100, anchor=tkinter.CENTER)
         tree.column('#3', width=100, anchor=tkinter.CENTER)
@@ -294,7 +309,7 @@ class appointmentList_stu(tkinter.Frame):
             back_btn.place(x=405, y=540)
 
 
-class booking_student(tkinter.Frame):
+class booking_student(tkinter.Frame):  # FIX
 
     def __init__(self, parent, controller):
         tkinter.Frame.__init__(self, parent)
@@ -312,7 +327,6 @@ class booking_student(tkinter.Frame):
         label = tkinter.Label(self, text="Booking Schedule", font=label_font_screen)
         list_label = tkinter.Label(self, text="Select your time")
         reason_label = tkinter.Label(self, text="Reason: ")
-
         if platform.system() == "Windows":
             reason_text = tkinter.Text(self, width=73, height=8, highlightbackground="grey")
         else:
@@ -360,8 +374,6 @@ class change_pass(tkinter.Frame):
     def __init__(self, parent, controller):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
-
-        top.geometry("800x600")
 
         def back():
             if get_user_position(get_logged_in_user()) == "LEC":
@@ -443,6 +455,7 @@ class lecturer_main(tkinter.Frame):
     def __init__(self, parent, controller):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
+        print("Lecturer main RUNNING")
 
         def add_edit():
             print("add/edit")
@@ -454,7 +467,9 @@ class lecturer_main(tkinter.Frame):
 
         def logout():
             logout_user()
-            top.destroy()
+            for widget in top.winfo_children():
+                widget.destroy()
+            MMCS_Auth()
             print("logout")
 
         def exit():
@@ -470,6 +485,7 @@ class lecturer_main(tkinter.Frame):
         label_font = ('Arial', 20, 'bold')
         labelfont = ('Arial', 50, 'bold')
         labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
+
         label_user = tkinter.Label(self, text="Welcome, " + get_user_name(get_logged_in_user()), font=label_font)
         add_edit_btn = tkinter.Button(self, text="Add/Edit Schedule", command=add_edit, pady=4, padx=4, width="20",
                                       height="5")
@@ -508,13 +524,39 @@ class listStudent_lecturer(tkinter.Frame):
         tkinter.Frame.__init__(self, parent)
         self.controller = controller
 
-        top.geometry("900x600")
-
         def approve():
-            print("approve")
+            curItem = tree.focus()
+            values = tree.item(curItem)
+            stu_ids = values['values']
+            try:
+                update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], True)
+                print("TREE :", tree.get_children())
+                for i in tree.get_children():
+                    tree.delete(i)
+                for j in range(6):
+                    full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
+                    tree.insert("", 'end', text=str(j),
+                                values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
+
+                print("approve")
+            except IndexError as error:
+                messagebox.showerror("MMCS", "Please select a student to Approve.")
 
         def cancel():
-            print("Cancel")
+            curItem = tree.focus()
+            values = tree.item(curItem)
+            stu_ids = values['values']
+            try:
+                update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], False)
+                for i in tree.get_children():
+                    tree.delete(i)
+                for j in range(6):
+                    full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
+                    tree.insert("", 'end', text=str(j),
+                                values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
+                print("Cancel")
+            except IndexError as error:
+                messagebox.showerror("MMCS", "Please select a student to Cancel.")
 
         def back():
             print("back")
@@ -528,7 +570,7 @@ class listStudent_lecturer(tkinter.Frame):
         labelTime = tkinter.Label(self, text="Consultation Time: ")
         labelDate = tkinter.Label(self, text="Date: ")
         labelReason = tkinter.Label(self, text="Reason: ")
-        labelStatus = tkinter.Label(self, text="Faculty: ")
+        labelFaculty = tkinter.Label(self, text="Faculty: ")
         approve_btn = tkinter.Button(self, text="Confirm Appointment", command=approve, pady=4, padx=4, width="20",
                                      height="2", fg="green")
         cancel_btn = tkinter.Button(self, text="Cancel Appointment", command=cancel, pady=4, padx=4, width="20",
@@ -545,7 +587,7 @@ class listStudent_lecturer(tkinter.Frame):
         tree.heading('#4', text='ID')
         tree.heading('#5', text='Status')
 
-        tree.column('#0', width="40", anchor=tkinter.CENTER)
+        tree.column('#0', width=40, anchor=tkinter.CENTER)
         tree.column('#1', width=400, anchor=tkinter.CENTER)
         tree.column('#2', width=100, anchor=tkinter.CENTER)
         tree.column('#3', width=100, anchor=tkinter.CENTER)
@@ -554,15 +596,21 @@ class listStudent_lecturer(tkinter.Frame):
 
         def selectItem(a):
             curItem = tree.focus()
-            # print(tree.item(curItem))
             values = tree.item(curItem)
             stu_ids = values['values']
-            print(stu_ids[3])  # output selected lec's id
+            labelName.config(text="Student Name: " + str(get_user_name(str(stu_ids[3]))))
+            labelID.config(text="ID: " + str(stu_ids[3]))
+            labelDate.config(text="Date: " + str(stu_ids[1]))
+            labelTime.config(text="Consultation Time: " + str(stu_ids[2]))
+            labelFaculty.config(text="Faculty: " + str(get_user_faculty(str(stu_ids[3]))))
+            labelReason.config(text="Reason: " + str(get_user_reason(str(stu_ids[3]), str(get_logged_in_user()))))
 
         tree.bind('<Double-Button-1>', selectItem)
 
-        for j in range(20):
-            tree.insert("", 0, text=str(j), values=("test", "13/12/18", "1pm", "1123345566", "approved"))
+        for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
+            full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
+            tree.insert("", 'end', text=str(j),
+                        values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
 
         if platform.system() == "Windows":
             label.place(x=190, y=5)
@@ -572,7 +620,7 @@ class listStudent_lecturer(tkinter.Frame):
             labelID.place(x=35, y=355)
             labelDate.place(x=35, y=380)
             labelTime.place(x=35, y=405)
-            labelStatus.place(x=35, y=430)
+            labelFaculty.place(x=35, y=430)
             labelReason.place(x=35, y=455)
             approve_btn.place(x=600, y=550)
             cancel_btn.place(x=400, y=550)
@@ -587,174 +635,176 @@ class listStudent_lecturer(tkinter.Frame):
             labelID.place(x=35, y=355)
             labelDate.place(x=35, y=380)
             labelTime.place(x=35, y=405)
-            labelStatus.place(x=35, y=430)
+            labelFaculty.place(x=35, y=430)
             labelReason.place(x=35, y=455)
             approve_btn.place(x=700, y=550)
             cancel_btn.place(x=500, y=550)
             back_btn.place(x=10, y=550)
 
 
-class MMCS_registration(tkinter.Frame):
+def MMCS_registration():
+    var = tkinter.StringVar()
+    var_faculty = tkinter.StringVar()
 
-    def __init__(self, parent, controller):
-        tkinter.Frame.__init__(self, parent)
-        self.controller = controller
-        var = tkinter.StringVar()
-        var_faculty = tkinter.StringVar()
+    def back():
+        for widget in top.winfo_children():
+            widget.destroy()
+        MMCS_Auth()
+        print("back")
 
-        def back():
-            print("back")
-            controller.show_frame("MMCS_Auth")
+    def register():
+        if var.get() == "LEC":
 
-        def register():
-            if var.get() == "LEC":
+            if len(fullname_entry.get()) <= 1 or len(userID_entry.get()) <= 1 or len(var_faculty.get()) <= 1 or len(
+                    room_entry.get()) <= 1:
+                messagebox.showerror("Error", "Please fill up all the necessary informations.")
+            else:
+                if len(pass_entry.get()) >= 8:
+                    if pass_entry.get() == confirmPass_entry.get():
+                        if check_user_id(userID_entry.get()):
 
-                if len(fullname_entry.get()) <= 1 or len(userID_entry.get()) <= 1 or len(var_faculty.get()) <= 1 or len(
-                        room_entry.get()) <= 1:
-                    messagebox.showerror("Error", "Please fill up all the necessary informations.")
-                else:
-                    if len(pass_entry.get()) >= 8:
-                        if pass_entry.get() == confirmPass_entry.get():
-                            if check_user_id(userID_entry.get()):
-
-                                add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(),
-                                                room_entry.get(),
-                                                pass_entry.get(), var.get())
-                                messagebox.showinfo("Registration", "Registration successful.")
-                                controller.show_frame("MMCS_Auth")
-                            else:
-                                messagebox.showerror("Error",
-                                                     "The User ID had already exists in the database. Please enter a different ID.")
+                            add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(),
+                                         room_entry.get(),
+                                         pass_entry.get(), var.get())
+                            messagebox.showinfo("Registration", "Registration successful.")
+                            for widget in top.winfo_children():
+                                widget.destroy()
+                            MMCS_Auth()
                         else:
                             messagebox.showerror("Error",
-                                                 "Password does not match. Please try again.")
+                                                 "The User ID had already exists in the database. Please enter a different ID.")
                     else:
                         messagebox.showerror("Error",
-                                             "Password must be atleast 8 characters long. Please try again.")
-            elif var.get() == "STU":
+                                             "Password does not match. Please try again.")
+                else:
+                    messagebox.showerror("Error",
+                                         "Password must be atleast 8 characters long. Please try again.")
+        elif var.get() == "STU":
 
-                if len(fullname_entry.get()) >= 1 or len(userID_entry.get()) >= 1 or len(var_faculty.get()) >= 1:
-                    if len(pass_entry.get()) >= 8:
-                        if pass_entry.get() == confirmPass_entry.get():
-                            if check_user_id(userID_entry.get()):
+            if len(fullname_entry.get()) >= 1 or len(userID_entry.get()) >= 1 or len(var_faculty.get()) >= 1:
+                if len(pass_entry.get()) >= 8:
+                    if pass_entry.get() == confirmPass_entry.get():
+                        if check_user_id(userID_entry.get()):
 
-                                add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
-                                                pass_entry.get(), var.get())
+                            add_new_user(fullname_entry.get(), userID_entry.get(), var_faculty.get(), "NULL",
+                                         pass_entry.get(), var.get())
 
-                                messagebox.showinfo("Registration", "Registration successful.")
-                                controller.show_frame("MMCS_Auth")
+                            messagebox.showinfo("Registration", "Registration successful.")
+                            for widget in top.winfo_children():
+                                widget.destroy()
+                            MMCS_Auth()
 
-                            else:
-                                messagebox.showerror("Error",
-                                                     "The User ID had already exists in the database. Please enter a different ID.")
                         else:
                             messagebox.showerror("Error",
-                                                 "Password does not match. Please try again.")
+                                                 "The User ID had already exists in the database. Please enter a different ID.")
                     else:
                         messagebox.showerror("Error",
-                                             "Password must be atleast 8 characters long. Please try again.")
+                                             "Password does not match. Please try again.")
                 else:
-                    messagebox.showerror("Error", "Please fill up all the necessary informations.")
-
+                    messagebox.showerror("Error",
+                                         "Password must be atleast 8 characters long. Please try again.")
             else:
                 messagebox.showerror("Error", "Please fill up all the necessary informations.")
 
-            print("register")
-
-        def radiobtn():
-            if var.get() == "STU":
-                room_entry.delete(0, 'end')
-                room_entry.configure(state="disabled")
-            else:
-                room_entry.configure(state="normal")
-
-        labelPhoto = tkinter.Label(self, image=photo, width="100", height="100")
-        labelfont = ('Arial', 50, 'bold')
-        label_font_screen = ('Arial', 30)
-        labelTitle = tkinter.Label(self, text="MMCS", font=labelfont)
-        labelScreen = tkinter.Label(self, text="Register New Account", font=label_font_screen)
-        labelName = tkinter.Label(self, text="Full Name")
-        fullname_entry = tkinter.Entry(self, bd=5, width=40)
-        labelUserID = tkinter.Label(self, text="User ID")
-        userID_entry = tkinter.Entry(self, bd=5)
-        labelFaculty = tkinter.Label(self, text="Faculty")
-        FCI_radio = tkinter.Radiobutton(self, text="FCI", value="FCI", variable=var_faculty)
-        FOM_radio = tkinter.Radiobutton(self, text="FOM", value="FOM", variable=var_faculty)
-        FOE_radio = tkinter.Radiobutton(self, text="FOE", value="FOE", variable=var_faculty)
-        FCM_radio = tkinter.Radiobutton(self, text="FCM", value="FCM", variable=var_faculty)
-        FAC_radio = tkinter.Radiobutton(self, text="FAC", value="FAC", variable=var_faculty)
-        labelRoom = tkinter.Label(self, text="Room \nNumber")
-        room_entry = tkinter.Entry(self, bd=5)
-        labelPass = tkinter.Label(self, text="Password")
-        pass_entry = tkinter.Entry(self, bd=5, show="*")
-        labelconfirmPass = tkinter.Label(self, text="Confirm \nPassword")
-        confirmPass_entry = tkinter.Entry(self, bd=5, show="*")
-        labelPosition = tkinter.Label(self, text="Position")
-        lecturer_radio = tkinter.Radiobutton(self, text="Lecturer", value="LEC", variable=var, command=radiobtn)
-        student_radio = tkinter.Radiobutton(self, text="Student", value="STU", variable=var, command=radiobtn)
-        back_btn = tkinter.Button(self, text="Back", command=back, pady=4, padx=4, width="20",
-                                  height="5")
-        register_btn = tkinter.Button(self, text="Register", command=register, pady=4, padx=4, fg='green', width="20",
-                                      height="5")
-
-        if platform.system() == "Windows":
-            labelPhoto.place(x=355, y=20)
-            labelTitle.place(x=310, y=120)
-            labelScreen.place(x=230, y=195)
-            labelName.place(x=250, y=254)
-            fullname_entry.place(x=325, y=250)
-            labelUserID.place(x=250, y=295)
-            userID_entry.place(x=325, y=290)
-            labelFaculty.place(x=250, y=330)
-            FCI_radio.place(x=325, y=330)
-            FCM_radio.place(x=380, y=330)
-            FOM_radio.place(x=435, y=330)
-            FAC_radio.place(x=490, y=330)
-            FOE_radio.place(x=545, y=330)
-            labelRoom.place(x=250, y=355)
-            room_entry.place(x=325, y=355)
-            labelPass.place(x=250, y=400)
-            pass_entry.place(x=325, y=395)
-            labelconfirmPass.place(x=250, y=430)
-            confirmPass_entry.place(x=325, y=433)
-            labelPosition.place(x=250, y=475)
-            lecturer_radio.place(x=325, y=475)
-            student_radio.place(x=430, y=475)
-            back_btn.place(x=220, y=505)
-            register_btn.place(x=410, y=505)
-
         else:
+            messagebox.showerror("Error", "Please fill up all the necessary informations.")
 
-            labelPhoto.place(x=335, y=30)
-            labelTitle.place(x=310, y=140)
-            labelScreen.place(x=230, y=200)
-            labelName.place(x=250, y=254)
-            fullname_entry.place(x=325, y=250)
-            labelUserID.place(x=250, y=295)
-            userID_entry.place(x=325, y=290)
-            labelFaculty.place(x=250, y=330)
-            FCI_radio.place(x=325, y=330)
-            FCM_radio.place(x=380, y=330)
-            FOM_radio.place(x=435, y=330)
-            FAC_radio.place(x=490, y=330)
-            FOE_radio.place(x=545, y=330)
-            labelRoom.place(x=250, y=355)
-            room_entry.place(x=325, y=355)
-            labelPass.place(x=250, y=400)
-            pass_entry.place(x=325, y=395)
-            labelconfirmPass.place(x=250, y=430)
-            confirmPass_entry.place(x=325, y=433)
-            labelPosition.place(x=250, y=475)
-            lecturer_radio.place(x=325, y=475)
-            student_radio.place(x=430, y=475)
-            back_btn.place(x=170, y=505)
-            register_btn.place(x=410, y=505)
+        print("register")
 
-        var.set(0)
-        var_faculty.set(0)
+    def radiobtn():
+        if var.get() == "STU":
+            room_entry.delete(0, 'end')
+            room_entry.configure(state="disabled")
+        else:
+            room_entry.configure(state="normal")
+
+    labelPhoto = tkinter.Label(top, image=photo, width="100", height="100")
+    labelfont = ('Arial', 50, 'bold')
+    label_font_screen = ('Arial', 30)
+    labelTitle = tkinter.Label(top, text="MMCS", font=labelfont)
+    labelScreen = tkinter.Label(top, text="Register New Account", font=label_font_screen)
+    labelName = tkinter.Label(top, text="Full Name")
+    fullname_entry = tkinter.Entry(top, bd=5, width=40)
+    labelUserID = tkinter.Label(top, text="User ID")
+    userID_entry = tkinter.Entry(top, bd=5)
+    labelFaculty = tkinter.Label(top, text="Faculty")
+    FCI_radio = tkinter.Radiobutton(top, text="FCI", value="FCI", variable=var_faculty)
+    FOM_radio = tkinter.Radiobutton(top, text="FOM", value="FOM", variable=var_faculty)
+    FOE_radio = tkinter.Radiobutton(top, text="FOE", value="FOE", variable=var_faculty)
+    FCM_radio = tkinter.Radiobutton(top, text="FCM", value="FCM", variable=var_faculty)
+    FAC_radio = tkinter.Radiobutton(top, text="FAC", value="FAC", variable=var_faculty)
+    labelRoom = tkinter.Label(top, text="Room \nNumber")
+    room_entry = tkinter.Entry(top, bd=5)
+    labelPass = tkinter.Label(top, text="Password")
+    pass_entry = tkinter.Entry(top, bd=5, show="*")
+    labelconfirmPass = tkinter.Label(top, text="Confirm \nPassword")
+    confirmPass_entry = tkinter.Entry(top, bd=5, show="*")
+    labelPosition = tkinter.Label(top, text="Position")
+    lecturer_radio = tkinter.Radiobutton(top, text="Lecturer", value="LEC", variable=var, command=radiobtn)
+    student_radio = tkinter.Radiobutton(top, text="Student", value="STU", variable=var, command=radiobtn)
+    back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width="20",
+                              height="5")
+    register_btn = tkinter.Button(top, text="Register", command=register, pady=4, padx=4, fg='green', width="20",
+                                  height="5")
+
+    if platform.system() == "Windows":
+        labelPhoto.place(x=355, y=20)
+        labelTitle.place(x=310, y=120)
+        labelScreen.place(x=230, y=195)
+        labelName.place(x=250, y=254)
+        fullname_entry.place(x=325, y=250)
+        labelUserID.place(x=250, y=295)
+        userID_entry.place(x=325, y=290)
+        labelFaculty.place(x=250, y=330)
+        FCI_radio.place(x=325, y=330)
+        FCM_radio.place(x=380, y=330)
+        FOM_radio.place(x=435, y=330)
+        FAC_radio.place(x=490, y=330)
+        FOE_radio.place(x=545, y=330)
+        labelRoom.place(x=250, y=355)
+        room_entry.place(x=325, y=355)
+        labelPass.place(x=250, y=400)
+        pass_entry.place(x=325, y=395)
+        labelconfirmPass.place(x=250, y=430)
+        confirmPass_entry.place(x=325, y=433)
+        labelPosition.place(x=250, y=475)
+        lecturer_radio.place(x=325, y=475)
+        student_radio.place(x=430, y=475)
+        back_btn.place(x=220, y=505)
+        register_btn.place(x=410, y=505)
+
+    else:
+
+        labelPhoto.place(x=335, y=30)
+        labelTitle.place(x=310, y=140)
+        labelScreen.place(x=230, y=200)
+        labelName.place(x=250, y=254)
+        fullname_entry.place(x=325, y=250)
+        labelUserID.place(x=250, y=295)
+        userID_entry.place(x=325, y=290)
+        labelFaculty.place(x=250, y=330)
+        FCI_radio.place(x=325, y=330)
+        FCM_radio.place(x=380, y=330)
+        FOM_radio.place(x=435, y=330)
+        FAC_radio.place(x=490, y=330)
+        FOE_radio.place(x=545, y=330)
+        labelRoom.place(x=250, y=355)
+        room_entry.place(x=325, y=355)
+        labelPass.place(x=250, y=400)
+        pass_entry.place(x=325, y=395)
+        labelconfirmPass.place(x=250, y=430)
+        confirmPass_entry.place(x=325, y=433)
+        labelPosition.place(x=250, y=475)
+        lecturer_radio.place(x=325, y=475)
+        student_radio.place(x=430, y=475)
+        back_btn.place(x=170, y=505)
+        register_btn.place(x=410, y=505)
+
+    var.set(0)
+    var_faculty.set(0)
 
 
-class student_main(tkinter.Frame):
+class student_main(tkinter.Frame):  # CRASH
 
     def __init__(self, parent, controller):
         tkinter.Frame.__init__(self, parent)
@@ -770,7 +820,9 @@ class student_main(tkinter.Frame):
 
         def logout():
             logout_user()
-            top.destroy()
+            for widget in top.winfo_children():
+                widget.destroy()
+            MMCS_Auth()
             print("logout")
 
         def exit():
@@ -825,9 +877,27 @@ class addAppointment_stu(tkinter.Frame):
         self.controller = controller
 
         def search1():
+            for i in tree.get_children():
+                tree.delete(i)
+            if len(search.get()) >= 1:
+                if len(search_lecture(search.get())) == 0:
+                    messagebox.showinfo("MMCS", "No match found.")
+                else:
+                    i = 1
+                    for j in search_lecture(search.get()):
+                        tree.insert('', 'end', text=str(i),
+                                    values=(j[0], j[1], j[2], j[3]))
+                        i = i + 1
+            else:
+                messagebox.showerror("MMCS", "Please enter the lecturer's name to search.")
             print("search")
 
         def confirm():
+            curItem = tree.focus()
+            # print(tree.item(curItem))
+            values = tree.item(curItem)
+            stu_ids = values['values']
+
             print("confirm")
             controller.show_frame("booking_student")
 
@@ -848,22 +918,26 @@ class addAppointment_stu(tkinter.Frame):
         back_btn = tkinter.Button(self, text="Back", command=back, pady=4, padx=4, width="20",
                                   height="5")
         tree = tker.Treeview(self)
-        tree = tker.Treeview(self, columns=('Lecturer Name', 'Room Number'))
+        tree = tker.Treeview(self, columns=('Lecturer Name', 'Room Number', 'ID', 'Faculty'))
 
-        tree.heading('#0', text='Lecturer Name')
-        tree.heading('#1', text='Room Number')
-        tree.heading('#2', text='Faculty')
+        tree.heading('#0', text='#')
+        tree.heading('#1', text='Lecturer Name')
+        tree.heading('#2', text='Room Number')
+        tree.heading('#3', text='ID')
+        tree.heading('#4', text='Faculty')
 
-        tree.column('#0', width=400, anchor=tkinter.CENTER)
-        tree.column('#1', width=100, anchor=tkinter.CENTER)
+        tree.column('#0', width=40, anchor=tkinter.CENTER)
+        tree.column('#1', width=400, anchor=tkinter.CENTER)
         tree.column('#2', width=100, anchor=tkinter.CENTER)
+        tree.column('#3', width=100, anchor=tkinter.CENTER)
+        tree.column('#4', width=100, anchor=tkinter.CENTER)
 
         def selectItem(a):
             curItem = tree.focus()
             # print(tree.item(curItem))
             values = tree.item(curItem)
             stu_ids = values['values']
-            print(stu_ids[3])  # output selected lec's id
+            print(str(stu_ids[2]))  # output selected lec's id
 
         tree.bind('<Double-Button-1>', selectItem)
 
@@ -884,5 +958,5 @@ class addAppointment_stu(tkinter.Frame):
 
 
 if __name__ == "__main__":
-    app = mainFrames()
-    app.mainloop()
+    MMCS_Auth()
+    top.mainloop()

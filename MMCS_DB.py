@@ -88,11 +88,12 @@ def add_bookings(user_id, book_day, book_time, book_time_start, book_time_end, b
 
 def update_approval_status(stu_id, user_id, date, boolean):
     if boolean:
-        c.execute("""UPDATE lec_bookings SET book_status = "Approved" WHERE stu_id = """ + '"' + stu_id + '"'
-                  + " AND user_id = " + '"' + user_id + '"' + " AND book_date = " + '"' + date + '";')
+        c.execute("""UPDATE lec_bookings SET book_status = "Approved" WHERE stu_id = """ + '"' + str(stu_id) + '"'
+                  + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
     else:
-        c.execute("""UPDATE lec_bookings SET book_status = "Rejected" WHERE stu_id = """ + '"' + stu_id + '"'
-                  + " AND user_id = " + '"' + user_id + '"' + " AND book_date = " + '"' + date + '";')
+        c.execute("""UPDATE lec_bookings SET book_status = "Rejected" WHERE stu_id = """ + '"' + str(stu_id) + '"'
+                  + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
+    conn.commit()
 
 
 def update_user_password(user_id, old_pass, new_pass):
@@ -109,10 +110,15 @@ def update_user_password(user_id, old_pass, new_pass):
 
 
 def get_logged_in_user():
-    c.execute("""SELECT user_id FROM user_credentials WHERE login_status = "Logged In"; """)
+    c.execute("""SELECT count(user_id) FROM user_credentials WHERE login_status = "Logged In"; """)
     respond = c.fetchone()
-    print("MMCS_DB_currentLoggedIn : " + respond[0])
-    return respond[0]
+    if respond[0] == 0:
+        return False
+    else:
+        c.execute("""SELECT user_id FROM user_credentials WHERE login_status = "Logged In"; """)
+        respond = c.fetchone()
+        print("MMCS_DB_currentLoggedIn : " + respond[0])
+        return respond[0]
 
 
 def check_user_id(user_id):
@@ -163,38 +169,38 @@ def get_lec_free_time(user_id):
 
 
 def get_all_stu_bookings(stu_id):
-    c.execute("""SELECT user_id FROM lec_bookings WHERE stu_id = """ + '"' + stu_id + '";')
-    respond = c.fetchone()
     c.execute("""SELECT user_credentials.user_name, user_credentials.user_faculty, user_credentials.user_room, 
                 lec_bookings.book_day, lec_bookings.book_time_start, lec_bookings.book_time_end, lec_bookings.book_reason,
                 lec_bookings.book_student, lec_bookings.stu_id, lec_bookings.book_date, lec_bookings.book_status,
                 lec_bookings.reason_cancel FROM user_credentials INNER JOIN lec_bookings ON user_credentials.user_id = 
-                lec_bookings.user_id WHERE user_credentials.user_id = """ + '"' + respond[0] + '";')
-
-    return c.fetchall()
+                lec_bookings.user_id WHERE lec_bookings.stu_id = """ + '"' + stu_id + '";')
+    respond = c.fetchall()
+    print("MMCS_DB_STU_BOOK : " + str(respond))
+    return respond
 
 
 def get_all_lec_bookings(lec_id):
-    c.execute("""SELECT stu_id FROM lec_bookings WHERE user_id = """ + '"' + lec_id + '";')
     c.execute("""SELECT lec_bookings.book_student, lec_bookings.book_day, lec_bookings.book_time_start, 
                         lec_bookings.book_date, lec_bookings.book_status, lec_bookings.stu_id
                         FROM lec_bookings WHERE lec_bookings.user_id = """ + '"' + lec_id + '";')
+    respond = c.fetchall()
+    print("MMCS_DB_LEC_BOOK : " + str(respond))
+    return respond
 
-    return c.fetchall()
 
-
-def get_stu_booking_details(stu_id):
+def get_stu_booking_details(stu_id):  # for lec module
     c.execute("""SELECT user_credentials.user_name, lec_bookings.stu_id, lec_bookings.book_date, 
                         lec_bookings.book_time_start, lec_bookings.book_time_end,
                         user_credentials.user_faculty, lec_bookings.book_reason 
                         FROM user_credentials INNER JOIN lec_bookings 
                         ON user_credentials.user_id = lec_bookings.stu_id 
                         WHERE lec_bookings.stu_id = """ + '"' + stu_id + '";')
+    respond = c.fetchall()
+    print("MMCS_DB_STU_BOOK_DETAILS : " + str(respond))
+    return respond
 
-    return c.fetchall()
 
-
-def get_lec_booking_details(stu_id, lec_id):
+def get_lec_booking_details(stu_id, lec_id):  # for stu module
     c.execute("""SELECT user_credentials.user_name, lec_bookings.book_date, 
                         lec_bookings.book_time_start, lec_bookings.book_time_end,
                         lec_bookings.book_status, user_credentials.user_faculty, 
@@ -203,45 +209,30 @@ def get_lec_booking_details(stu_id, lec_id):
                         ON user_credentials.user_id = lec_bookings.user_id 
                         WHERE lec_bookings.stu_id = """ + '"' + stu_id + '"' + " AND " + "lec_bookings.user_id = " +
                         '"' + lec_id + '";')
-    return c.fetchall()
+    respond = c.fetchall()
+    print("MMCS_DB_LEC_BOOK_DETAILS : " + str(respond))
+    return respond
+
+
+def get_user_reason(stu_id, lec_id):
+    c.execute("""SELECT book_reason FROM lec_bookings WHERE user_id = """ + '"' + lec_id + '" AND stu_id = ' + '"'
+                        + stu_id + '";')
+    respond = c.fetchone()
+    return respond[0]
 
 
 def search_lecture(lec_name):
-    c.execute("""SELECT user_name FROM user_credentials WHERE user_name LIKE """ + "'%" + lec_name + "%'")
-    return c.fetchall()
+    c.execute("""SELECT user_name, user_room, user_id, user_faculty FROM user_credentials WHERE user_name LIKE """
+              + "'%" + lec_name + "%'" + " AND user_position = " + '"' + "LEC" + '";')
+    respond = c.fetchall()
+    print("MMCS_DB_SEARCHED_RES: " + str(respond))
+    return respond
 
 
 def logout_user():
     c.execute("""UPDATE user_credentials SET login_status = "Logged Out" WHERE login_status = "Logged In" """)
     conn.commit()
-    conn.close()
-
-
-def test_users_insert():
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-               VALUES ("MU2283377", "0000", "Suhaini", "FCI", "BR2004", "LEC"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-               VALUES ("MU4475566", "0000", "Khairi", "FAC", "BR3008", "LEC"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-                   VALUES ("MU9934499", "0000", "Dr. Ng", "FOE", "BR1028", "LEC"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-                   VALUES ("MU4475566", "0000", "Willie the poh", "FCM", "BR2904", "LEC"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-                   VALUES ("1184475566", "0000", "Nicholas", "FCM", NULL, "STU"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-                       VALUES ("1109999999", "0000", "Aik Seng", "FAC", NULL, "STU"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-                       VALUES ("1171102233", "0000", "Faris", "FOE", NULL, "STU"); """)
-    conn.commit()
-    c.execute("""INSERT INTO user_credentials (user_id, user_pass, user_name, user_faculty, user_room, user_position)
-                       VALUES ("1181192233", "0000", "Jing Guan", "FCI", NULL, "STU"); """)
-    conn.commit()
+    print("Logged Out Success")
 
 
 conn.commit()
