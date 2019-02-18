@@ -74,12 +74,12 @@ def add_lec_time(user_id, lec_day, time_start, time_end, date, availability):
     conn.commit()
 
 
-def add_bookings(user_id, book_day, book_time, book_time_start, book_time_end, book_reason, book_student, stu_id,
+def add_bookings(user_id, book_day, book_time_start, book_time_end, book_reason, book_student, stu_id,
                  book_date, book_status, reason_cancel):
     c.execute(
-        """INSERT INTO lec_bookings (user_id, book_day, book_time, book_time_start, book_time_end, book_reason, 
+        """INSERT INTO lec_bookings (user_id, book_day, book_time_start, book_time_end, book_reason, 
         book_student, stu_id, book_date, book_status, reason_cancel) VALUES (""" + '"' + user_id + '"' + ","
-        + '"' + book_day + '"' + "," + '"' + book_time + '"' + "," + '"' + book_time_start + '"' + ","
+        + '"' + book_day + '"' + "," + '"' + book_time_start + '"' + ","
         + '"' + book_time_end + '"' + "," + '"' + book_reason + '"' + "," + '"' + book_student + '"' + ","
         + '"' + stu_id + '"' + "," + '"' + book_date + '"' + "," + '"' + book_status + '"' + ","
         + '"' + reason_cancel + '"' + ");")
@@ -107,6 +107,13 @@ def update_user_password(user_id, old_pass, new_pass):
         return True
     else:
         return False
+
+
+def update_time_slot_stat(book_time_start, book_time_end, book_date, user_id):
+    c.execute("""UPDATE lec_available_time SET time_availability = "Booked" WHERE user_id = """ + '"' + user_id + '"'
+              + " AND lec_date = " + '"' + book_date + '"' + " AND " + "lec_time_start = " + '"' + book_time_start
+              + '"' + " AND " + "lec_time_end = " + '"' + book_time_end + '";')
+    conn.commit()
 
 
 def get_logged_in_user():
@@ -169,7 +176,7 @@ def get_lec_free_time(user_id):
 
 
 def get_all_stu_bookings(stu_id):
-    c.execute("""SELECT user_credentials.user_name, user_credentials.user_faculty, user_credentials.user_room, 
+    c.execute("""SELECT user_credentials.user_name, user_credentials.user_faculty, user_credentials.user_room, user_credentials.user_id,
                 lec_bookings.book_day, lec_bookings.book_time_start, lec_bookings.book_time_end, lec_bookings.book_reason,
                 lec_bookings.book_student, lec_bookings.stu_id, lec_bookings.book_date, lec_bookings.book_status,
                 lec_bookings.reason_cancel FROM user_credentials INNER JOIN lec_bookings ON user_credentials.user_id = 
