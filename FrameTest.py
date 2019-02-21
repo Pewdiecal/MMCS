@@ -6,6 +6,8 @@ from tkinter import messagebox
 from tkinter import ttk as tker
 from MMCS_DB import *
 from datetime import date
+import time
+import datetime
 import calendar
 
 top = tkinter.Tk()
@@ -15,16 +17,45 @@ top.resizable(False, False)
 photo = tkinter.PhotoImage(file="mmu.gif")
 
 
+def dateConverterLEC(book_day):
+    dateToday = date.today()
+    dayToday = int(dateToday.strftime("%d"))
+    monthToday = int(dateToday.strftime("%m"))
+    yearToday = int(dateToday.strftime("%Y"))
+    dnameToday = dateToday.strftime("%A")
+
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    print("dnameToday : " + dnameToday)
+
+    i = dayToday
+    while True:
+        i = i + 1
+        maxDay = calendar.monthrange(yearToday, monthToday)
+        if i > maxDay[1]:  # check for 30,28,29,31 days
+            i = 1
+            monthToday = monthToday + 1
+        if monthToday > 12:  # check for max month for that year
+            monthToday = 1
+            yearToday = yearToday + 1
+
+        dayDate = date(yearToday, monthToday, i)
+        dayIndex = days.index(book_day)
+
+        if dayDate.weekday() == dayIndex:
+            print("Date for " + book_day + " is " + str(dayDate))
+            return str(dayDate)
+
+
 def MMCS_Auth():
     def AuthFunc():
         print("login")
-        if len(username.get()) > 1 and len(password.get()) > 1: #to check if username and password is entered
-            if validate_user(username.get(), password.get()): #to check if username and password match
-                if get_user_position(get_logged_in_user()) == "LEC": #if lecturer, go to lecturer main screen
+        if len(username.get()) > 1 and len(password.get()) > 1:
+            if validate_user(username.get(), password.get()):
+                if get_user_position(get_logged_in_user()) == "LEC":
                     for widget in top.winfo_children():
                         widget.destroy()
                     lecturer_main()
-                else: #else go to student main screen
+                else:
                     for widget in top.winfo_children():
                         widget.destroy()
                     student_main()
@@ -73,25 +104,64 @@ def MMCS_Auth():
 
 
 def Add_Edit_Func():  # Lec module
-
-    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    day_array = []
+    time_start_array = []
+    time_end_array = []
 
     def add():
-        getDate()
         day = dayList_box.get(dayList_box.curselection())
-        time_start = hrs_entry.get() + ':' + min_entry.get()
-        time_end = hrs2_entry.get() + ':' + mins2_entry.get()
-        add_lec_time(get_logged_in_user(), day, time_start, time_end, )
+        time_start = datetime.timedelta(hours=int(hrs_entry.get()), minutes=int(min_entry.get()))
+        time_end = datetime.timedelta(hours=int(hrs2_entry.get()), minutes=int(mins2_entry.get()))
+        Tduration = time.strptime(str(time_end - time_start), "%H:%M:%S")
+        if len(day_array) == 0:
+            day_array.append(day)
+            time_start_array.append(str(time_start))
+            time_end_array.append(str(time_end))
+            tree.insert("", 'end', text=str(len(tree.get_children()) + 1),
+                        values=(day, str(time_start), str(time_end),
+                                str(Tduration[3]) + " HRS " + str(Tduration[4]) + " MIN"))
+        elif len(day_array) > 0:
+            i = 0
+            while i <= (len(day_array)-1):
+                if day_array[i] == day and time_start_array[i] == str(time_start) and time_end_array[i] == str(time_end):
+                    print(i)
+                    messagebox.showinfo("MMCS", "The time slot is already existed.")
+                    break
+                elif i == (len(day_array)-1):
+                    day_array.append(day)
+                    time_start_array.append(str(time_start))
+                    time_end_array.append(str(time_end))
+                    tree.insert("", 'end', text=str(len(tree.get_children()) + 1),
+                                values=(day, str(time_start) + " TO " + str(time_end),
+                                        str(Tduration[3]) + " HRS " + str(Tduration[4]) + " MIN"))
+                    break
+                i = i + 1
+
         print("add")
 
     def remove():
+        curItem = tree.focus()
+        # print(tree.item(curItem))
+        indexItem = tree.index(curItem)
+        values = tree.item(curItem)
+        stu_ids = values['values']
+        print(stu_ids)
+        day_array.remove(stu_ids[0])
+        time_start_array.remove(stu_ids[1])
+        time_end_array.remove(stu_ids[2])
+        remove_bookings(get_logged_in_user(), stu_ids[0], stu_ids[1], stu_ids[2])
+        tree.delete(curItem)
         print("remove")
 
     def confirm():
         print("confirm")
-        for widget in top.winfo_children():
-            widget.destroy()
-        lecturer_main()
+        for i in range(len(day_array)):
+            print(day_array)
+            add_lec_time(get_logged_in_user(), day_array[i], time_start_array[i], time_end_array[i],
+                        dateConverterLEC(day_array[i]), "Available")
+            for widget in top.winfo_children():
+                widget.destroy()
+            lecturer_main()
 
     def back():
         print("back")
@@ -128,17 +198,33 @@ def Add_Edit_Func():  # Lec module
                               height="5")
 
     tree = tker.Treeview(top)
-    tree = tker.Treeview(top, columns=('Day', 'Time', 'Duration'))
+    tree = tker.Treeview(top, columns=('Day', 'Time Start', 'Time End', 'Duration'))
 
     tree.heading('#0', text='#')
     tree.heading('#1', text='Day')
-    tree.heading('#2', text='Time')
-    tree.heading('#3', text='Duration')
+    tree.heading('#2', text='Time Start')
+    tree.heading('#3', text='Time End')
+    tree.heading('#4', text='Duration')
 
     tree.column('#0', width=40, anchor=tkinter.CENTER)
     tree.column('#1', width=200, anchor=tkinter.CENTER)
-    tree.column('#2', width=300, anchor=tkinter.CENTER)
+    tree.column('#2', width=100, anchor=tkinter.CENTER)
     tree.column('#3', width=100, anchor=tkinter.CENTER)
+    tree.column('#4', width=200, anchor=tkinter.CENTER)
+
+    for j in range(len(get_lec_time_slots(get_logged_in_user()))):
+        array_data = get_lec_time_slots(get_logged_in_user())[j]
+        time_start = time.strptime(array_data[1], "%H:%M:%S")
+        time_end = time.strptime(array_data[2], "%H:%M:%S")
+        time_stamp_start = datetime.timedelta(hours=int(time_start[3]), minutes=int(time_start[4]))
+        time_stamp_end = datetime.timedelta(hours=int(time_end[3]), minutes=int(time_end[4]))
+        Tduration = time.strptime(str(time_stamp_end - time_stamp_start), "%H:%M:%S")
+        day_array.append(array_data[0])
+        time_start_array.append(str(time_stamp_start))
+        time_end_array.append(str(time_stamp_end))
+        tree.insert("", 'end', text=str(j + 1),
+                    values=(day_array[j], str(time_start_array[j]), str(time_end_array[j]),
+                            str(Tduration[3]) + " HRS " + str(Tduration[4]) + " MINS"))
 
     if platform.system() == "Windows":
 
@@ -279,14 +365,13 @@ def booking_student(selectedID):
         curItem = tree.focus()
         indexItem = tree.index(curItem)
         values = tree.item(curItem)
-        stu_ids = values['values']
-        if len(stu_ids) > 0:
+        book_day = values['values']
+        if len(book_day) > 0:
             if len(reason_text.get("1.0", 'end')) >= 10:
                 array_time = get_lec_free_time(selectedID)[indexItem]
-                add_bookings(selectedID, stu_ids[0], array_time[1], array_time[2], reason_text.get("1.0", 'end'),
+                add_bookings(selectedID, book_day[0], array_time[1], array_time[2], reason_text.get("1.0", 'end'),
                              get_user_name(get_logged_in_user()), get_logged_in_user(), array_time[3],
                              "Pending", "NULL")
-                update_time_slot_stat(array_time[1], array_time[2], array_time[3], selectedID)
                 for widget in top.winfo_children():
                     widget.destroy()
                 student_main()
@@ -332,10 +417,14 @@ def booking_student(selectedID):
 
     for j in range(len(get_lec_free_time(selectedID))):
         full_array = (get_lec_free_time(selectedID))[j]
-        totalDuration = int(full_array[2]) - int(full_array[1])
+        time_start = time.strptime(full_array[1], "%H:%M:%S")
+        time_end = time.strptime(full_array[2], "%H:%M:%S")
+        time_stamp_start = datetime.timedelta(hours=int(time_start[3]), minutes=int(time_start[4]))
+        time_stamp_end = datetime.timedelta(hours=int(time_end[3]), minutes=int(time_end[4]))
+        Tduration = time.strptime(str(time_stamp_end - time_stamp_start), "%H:%M:%S")
         tree.insert("", 'end', text=str(j + 1),
-                    values=(full_array[0], full_array[1] + " HRS" + " to " + full_array[2] + " HRS", full_array[3],
-                            str(totalDuration) + " Hours"))
+                    values=(full_array[0], str(time_stamp_start) + " TO " + str(time_stamp_end), full_array[3],
+                            str(Tduration[3]) + " HRS " + str(Tduration[4]) + " MIN"))
 
     if platform.system() == "Windows":
         label.place(x=275, y=30)
@@ -513,17 +602,16 @@ def listStudent_lecturer():
         curItem = tree.focus()
         values = tree.item(curItem)
         stu_ids = values['values']
-        reason = ""
         try:
-            update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], True)
-            update_reason_cancel(stu_ids[3], get_logged_in_user(), stu_ids[1], reason)
+            update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], stu_ids[2], True)
+            update_time_slot_stat(stu_ids[2], stu_ids[1], get_logged_in_user(), True)
             print("TREE :", tree.get_children())
             for i in tree.get_children():
                 tree.delete(i)
             for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
                 full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
-                tree.insert("", 'end', text=str(j+1),
-                            values=(full_array[0], full_array[3], full_array[2] + " HRS", full_array[5], full_array[4]))
+                tree.insert("", 'end', text=str(j + 1),
+                            values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
 
             print("approve")
         except IndexError as error:
@@ -533,41 +621,19 @@ def listStudent_lecturer():
         curItem = tree.focus()
         values = tree.item(curItem)
         stu_ids = values['values']
-
-        class Reason(tkinter.Tk):
-            def __init__(self):
-                tkinter.Tk.__init__(self)
-                self.geometry("500x50")
-                self.title("Please enter reason for cancelling")
-                self.entry = tkinter.Entry(self)
-                self.button = tkinter.Button(self, text="Ok", command=self.on_button)
-                self.entry.place(width=500, height=25)
-                self.button.place(width=100, height=25, x=200, y=25)
-                self.wait_window()
-            def on_button(self):
-                update_reason_cancel(stu_ids[3], get_logged_in_user(), stu_ids[1], self.entry.get())
-                self.destroy()
-        if curItem != "":
-            try:
-                cancel_btn.config(state="disabled")
-                back_btn.config(state="disabled")
-                approve_btn.config(state="disabled")
-                Reason()
-                update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], False)
-                for i in tree.get_children():
-                    tree.delete(i)
-                for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
-                    full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
-                    tree.insert("", 'end', text=str(j+1),
-                            values=(full_array[0], full_array[3], full_array[2] + " HRS", full_array[5], full_array[4]))
-                print("Cancel")
-            except IndexError as error:
-                messagebox.showerror("MMCS", "Please select a student to Cancel.")
-            cancel_btn.config(state="normal")
-            back_btn.config(state="normal")
-            approve_btn.config(state="normal")
-        else:
+        try:
+            update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], stu_ids[2], False)
+            update_time_slot_stat(stu_ids[2], stu_ids[1], get_logged_in_user(), False)
+            for i in tree.get_children():
+                tree.delete(i)
+            for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
+                full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
+                tree.insert("", 'end', text=str(j + 1),
+                            values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
+            print("Cancel")
+        except IndexError as error:
             messagebox.showerror("MMCS", "Please select a student to Cancel.")
+
     def back():
         print("back")
         for widget in top.winfo_children():
@@ -621,8 +687,8 @@ def listStudent_lecturer():
 
     for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
         full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
-        tree.insert("", 'end', text=str(j+1),
-                    values=(full_array[0], full_array[3], full_array[2] + " HRS", full_array[5], full_array[4]))
+        tree.insert("", 'end', text=str(j + 1),
+                    values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
 
     if platform.system() == "Windows":
         label.place(x=190, y=5)
@@ -637,6 +703,7 @@ def listStudent_lecturer():
         approve_btn.place(x=600, y=550)
         cancel_btn.place(x=400, y=550)
         back_btn.place(x=10, y=550)
+
     else:
 
         label.place(x=260, y=5)
