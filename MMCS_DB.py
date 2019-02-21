@@ -95,6 +95,10 @@ def update_approval_status(stu_id, user_id, date, boolean):
                   + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
     conn.commit()
 
+def update_reason_cancel(stu_id, user_id, date, reason):
+    c.execute("""UPDATE lec_bookings SET reason_cancel = """ + '"' + reason + '"' + """ WHERE stu_id = """ + '"' + str(stu_id) + '"'
+                  + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
+    conn.commit()
 
 def update_user_password(user_id, old_pass, new_pass):
     c.execute("""SELECT count(user_pass) FROM user_credentials WHERE user_id = """ + '"' + user_id + '"'
@@ -107,7 +111,6 @@ def update_user_password(user_id, old_pass, new_pass):
         return True
     else:
         return False
-
 
 def update_time_slot_stat(book_time_start, book_time_end, book_date, user_id):
     c.execute("""UPDATE lec_available_time SET time_availability = "Booked" WHERE user_id = """ + '"' + user_id + '"'

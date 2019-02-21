@@ -18,13 +18,13 @@ photo = tkinter.PhotoImage(file="mmu.gif")
 def MMCS_Auth():
     def AuthFunc():
         print("login")
-        if len(username.get()) > 1 and len(password.get()) > 1:
-            if validate_user(username.get(), password.get()):
-                if get_user_position(get_logged_in_user()) == "LEC":
+        if len(username.get()) > 1 and len(password.get()) > 1: #to check if username and password is entered
+            if validate_user(username.get(), password.get()): #to check if username and password match
+                if get_user_position(get_logged_in_user()) == "LEC": #if lecturer, go to lecturer main screen
                     for widget in top.winfo_children():
                         widget.destroy()
                     lecturer_main()
-                else:
+                else: #else go to student main screen
                     for widget in top.winfo_children():
                         widget.destroy()
                     student_main()
@@ -513,8 +513,10 @@ def listStudent_lecturer():
         curItem = tree.focus()
         values = tree.item(curItem)
         stu_ids = values['values']
+        reason = ""
         try:
             update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], True)
+            update_reason_cancel(stu_ids[3], get_logged_in_user(), stu_ids[1], reason)
             print("TREE :", tree.get_children())
             for i in tree.get_children():
                 tree.delete(i)
@@ -531,18 +533,41 @@ def listStudent_lecturer():
         curItem = tree.focus()
         values = tree.item(curItem)
         stu_ids = values['values']
-        try:
-            update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], False)
-            for i in tree.get_children():
-                tree.delete(i)
-            for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
-                full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
-                tree.insert("", 'end', text=str(j+1),
-                            values=(full_array[0], full_array[3], full_array[2] + " HRS", full_array[5], full_array[4]))
-            print("Cancel")
-        except IndexError as error:
-            messagebox.showerror("MMCS", "Please select a student to Cancel.")
 
+        class Reason(tkinter.Tk):
+            def __init__(self):
+                tkinter.Tk.__init__(self)
+                self.geometry("500x50")
+                self.title("Please enter reason for cancelling")
+                self.entry = tkinter.Entry(self)
+                self.button = tkinter.Button(self, text="Ok", command=self.on_button)
+                self.entry.place(width=500, height=25)
+                self.button.place(width=100, height=25, x=200, y=25)
+                self.wait_window()
+            def on_button(self):
+                update_reason_cancel(stu_ids[3], get_logged_in_user(), stu_ids[1], self.entry.get())
+                self.destroy()
+        if curItem != "":
+            try:
+                cancel_btn.config(state="disabled")
+                back_btn.config(state="disabled")
+                approve_btn.config(state="disabled")
+                Reason()
+                update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], False)
+                for i in tree.get_children():
+                    tree.delete(i)
+                for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
+                    full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
+                    tree.insert("", 'end', text=str(j+1),
+                            values=(full_array[0], full_array[3], full_array[2] + " HRS", full_array[5], full_array[4]))
+                print("Cancel")
+            except IndexError as error:
+                messagebox.showerror("MMCS", "Please select a student to Cancel.")
+            cancel_btn.config(state="normal")
+            back_btn.config(state="normal")
+            approve_btn.config(state="normal")
+        else:
+            messagebox.showerror("MMCS", "Please select a student to Cancel.")
     def back():
         print("back")
         for widget in top.winfo_children():
@@ -612,7 +637,6 @@ def listStudent_lecturer():
         approve_btn.place(x=600, y=550)
         cancel_btn.place(x=400, y=550)
         back_btn.place(x=10, y=550)
-
     else:
 
         label.place(x=260, y=5)
