@@ -281,7 +281,7 @@ def Add_Edit_Func():  # Lec module
         remove_btn.place(x=680, y=225)
         confirm_btn.place(x=600, y=500)
         back_btn.place(x=400, y=500)
-        tree.place(x=70, y=270)
+        tree.place(x=130, y=270)
 
     else:
 
@@ -1062,17 +1062,19 @@ def MMCS_Student_Search():
 
     def confirm():
         curItem = tree.focus()
-        # print(tree.item(curItem))
-        values = tree.item(curItem)
-        lec_id = values['values']
-        print("confirm")
-        if len(get_lec_free_time(str(lec_id[2]))) <= 0:
-            messagebox.showinfo("MMCS", "This lecturer is unavailable for consultation for now. "
-                                        "Please select a different lecturer.")
+        if len(curItem) > 0: 
+            values = tree.item(curItem)
+            lec_id = values['values']
+            print("confirm")
+            if len(get_lec_free_time(str(lec_id[2]))) <= 0:
+                messagebox.showinfo("MMCS", "This lecturer is unavailable for consultation for now. "
+                                            "Please select a different lecturer.")
+            else:
+                for widget in top.winfo_children():
+                    widget.destroy()
+                booking_student(str(lec_id[2]))
         else:
-            for widget in top.winfo_children():
-                widget.destroy()
-            booking_student(str(lec_id[2]))
+            messagebox.showerror("Error", "No lecturer selected.")
 
     def back():
         print("back")
@@ -1117,11 +1119,11 @@ def MMCS_Student_Search():
     tree.bind('<Double-Button-1>', selectItem)
 
     if platform.system() == "Windows":
-        label.place(x=220, y=20)
-        search.place(x=150, y=90)
-        search_btn.place(x=590, y=83)
+        label.place(x=250, y=20)
+        search.place(x=180, y=90)
+        search_btn.place(x=615, y=83)
         tree.place(x=95, y=130)
-        confirm_btn.place(x=600, y=500)
+        confirm_btn.place(x=700, y=500)
         back_btn.place(x=10, y=500)
     else:
         label.place(x=270, y=20)
