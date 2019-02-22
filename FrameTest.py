@@ -170,12 +170,12 @@ def Add_Edit_Func():  # Lec module
         indexItem = tree.index(curItem)
         if len(curItem) !=0:
             values = tree.item(curItem)
-            stu_ids = values['values']
+            datas = values['values']
             print(values)
-            day_array.remove(stu_ids[0])
-            time_start_array.remove(stu_ids[1])
-            time_end_array.remove(stu_ids[2])
-            remove_bookings(get_logged_in_user(), stu_ids[0], stu_ids[1], stu_ids[2])
+            day_array.remove(datas[0])
+            time_start_array.remove(datas[1])
+            time_end_array.remove(datas[2])
+            remove_bookings(get_logged_in_user(), datas[0], datas[1], datas[2])
             tree.delete(curItem)
         else:
             messagebox.showerror("Error", "Please select a timeslot to remove.")
@@ -350,16 +350,16 @@ def student_appointment_list():  # stu module
         # print(tree.item(curItem))
         indexItem = tree.index(curItem)
         values = tree.item(curItem)
-        stu_ids = values['values']
+        datas = values['values']
         array_data = get_all_stu_bookings(get_logged_in_user())[indexItem]
-        labelName.config(text="Lecturer Name: " + stu_ids[0])
-        labelTime.config(text="Consultation Time: " + stu_ids[2])
+        labelName.config(text="Lecturer Name: " + datas[0])
+        labelTime.config(text="Consultation Time: " + datas[2])
         print(array_data)
         labelDate.config(text="Date: " + array_data[10])
         labelFaculty.config(text="Faculty: " + array_data[1])
         labelRoom.config(text="Room Number: " + array_data[2])
         labelReason.config(text="Cancellation Reason: " + array_data[12])
-        labelStatus.config(text="Status: " + stu_ids[4])
+        labelStatus.config(text="Status: " + datas[4])
 
     tree.bind('<Double-Button-1>', selectItem)
     for j in range(len(get_all_stu_bookings(get_logged_in_user()))):
@@ -639,12 +639,12 @@ def listStudent_lecturer():
     def approve():
         curItem = tree.focus()
         values = tree.item(curItem)
-        stu_ids = values['values']
+        datas = values['values']
         reason = ""
         try:
-            update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], stu_ids[2], True)
-            update_time_slot_stat(stu_ids[2], stu_ids[1], get_logged_in_user(), True)
-            update_reason_cancel(stu_ids[3], get_logged_in_user(), stu_ids[1], reason)
+            update_approval_status(datas[3], get_logged_in_user(), datas[1], datas[2], True)
+            update_time_slot_stat(datas[2], datas[1], get_logged_in_user(), True)
+            update_reason_cancel(datas[3], get_logged_in_user(), datas[1], reason)
             print("TREE :", tree.get_children())
             for i in tree.get_children():
                 tree.delete(i)
@@ -660,7 +660,7 @@ def listStudent_lecturer():
     def cancel():
         curItem = tree.focus()
         values = tree.item(curItem)
-        stu_ids = values['values']
+        datas = values['values']
         
 
         class Reason(tkinter.Tk):
@@ -668,14 +668,15 @@ def listStudent_lecturer():
                 tkinter.Tk.__init__(self)
                 self.geometry("500x50")
                 self.title("Please enter reason for cancelling")
-                self.entry = tkinter.Entry(self)
+                self.entry = tkinter.Text(self)
                 self.button = tkinter.Button(self, text="Ok", command=self.on_button)
                 self.entry.place(width=500, height=25)
                 self.button.place(width=100, height=25, x=200, y=25)
                 self.wait_window()
 
             def on_button(self):
-                update_reason_cancel(stu_ids[3], get_logged_in_user(), stu_ids[1], self.entry.get())
+                
+                update_reason_cancel(datas[3], get_logged_in_user(), datas[1], self.entry.get('1.0', "end"))
                 self.destroy()
 
         if curItem != "":
@@ -684,8 +685,8 @@ def listStudent_lecturer():
                 back_btn.config(state="disabled")
                 approve_btn.config(state="disabled")
                 Reason()
-                update_approval_status(stu_ids[3], get_logged_in_user(), stu_ids[1], stu_ids[2], False)
-                update_time_slot_stat(stu_ids[2], stu_ids[1], get_logged_in_user(), False)
+                update_approval_status(datas[3], get_logged_in_user(), datas[1], datas[2], False)
+                update_time_slot_stat(datas[2], datas[1], get_logged_in_user(), False)
                 for i in tree.get_children():
                     tree.delete(i)
                 for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
@@ -741,13 +742,13 @@ def listStudent_lecturer():
     def selectItem(a):
         curItem = tree.focus()
         values = tree.item(curItem)
-        stu_ids = values['values']
-        labelName.config(text="Student Name: " + str(get_user_name(str(stu_ids[3]))))
-        labelID.config(text="ID: " + str(stu_ids[3]))
-        labelDate.config(text="Date: " + str(stu_ids[1]))
-        labelTime.config(text="Consultation Time: " + str(stu_ids[2]))
-        labelFaculty.config(text="Faculty: " + str(get_user_faculty(str(stu_ids[3]))))
-        labelReason.config(text="Reason: " + str(get_user_reason(str(stu_ids[3]), str(get_logged_in_user()))))
+        datas = values['values']
+        labelName.config(text="Student Name: " + str(get_user_name(str(datas[3]))))
+        labelID.config(text="ID: " + str(datas[3]))
+        labelDate.config(text="Date: " + str(datas[1]))
+        labelTime.config(text="Consultation Time: " + str(datas[2]))
+        labelFaculty.config(text="Faculty: " + str(get_user_faculty(str(datas[3]))))
+        labelReason.config(text="Reason: " + str(get_user_reason(str(datas[3]), str(get_logged_in_user()))))
 
     tree.bind('<Double-Button-1>', selectItem)
 
@@ -1113,8 +1114,8 @@ def MMCS_Student_Search():
         curItem = tree.focus()
         # print(tree.item(curItem))
         values = tree.item(curItem)
-        stu_ids = values['values']
-        print(str(stu_ids[2]))  # output selected lec's id
+        datas = values['values']
+        print(str(datas[2]))  # output selected lec's id
 
     tree.bind('<Double-Button-1>', selectItem)
 
