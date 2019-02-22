@@ -67,29 +67,53 @@ def validate_user(user_id, user_pass):
 
 
 def add_lec_time(user_id, lec_day, time_start, time_end, date, availability):
+    c.execute("""DELETE FROM lec_available_time WHERE lec_day = """ + '"' + lec_day + '"' + " AND "
+              + "lec_time_start = " + '"' + time_start + '"' + " AND " + "lec_time_end = " + '"' + time_end
+              + '";')
     c.execute(
         """INSERT INTO lec_available_time (user_id, lec_day, lec_time_start, lec_time_end, lec_date, time_availability) 
         VALUES (""" + '"' + user_id + '"' + "," + '"' + lec_day + '"' + "," + '"' + time_start + '"' + ","
         + '"' + time_end + '"' + "," + '"' + date + '"' + "," + '"' + availability + '"' + ");")
+    c.execute("""SELECT book_date, book_time_start, book_time_end, book_status FROM lec_bookings 
+                WHERE user_id = """ + '"' + user_id + '"' + " AND " + "book_status = " + '"' + "Approved" + '";')
+    responds = c.fetchall()
+    if len(responds) > 0:
+        for i in range(len(responds)):
+            arraydata = responds[i]
+            c.execute("""UPDATE lec_available_time SET time_availability = "Booked" 
+                        WHERE user_id = """ + '"' + user_id + '"' + " AND " + "lec_time_start = " + '"' + arraydata[1]
+                      + '"' + " AND " + "lec_time_end = " + '"' + arraydata[2] + '"' + " AND " + "lec_date = "
+                      + '"' + arraydata[0] + '";')
+
     conn.commit()
 
 
-def add_bookings(user_id, book_day, book_time, book_time_start, book_time_end, book_reason, book_student, stu_id,
+def add_bookings(user_id, book_day, book_time_start, book_time_end, book_reason, book_student, stu_id,
                  book_date, book_status, reason_cancel):
     c.execute(
-        """INSERT INTO lec_bookings (user_id, book_day, book_time, book_time_start, book_time_end, book_reason, 
+        """INSERT INTO lec_bookings (user_id, book_day, book_time_start, book_time_end, book_reason, 
         book_student, stu_id, book_date, book_status, reason_cancel) VALUES (""" + '"' + user_id + '"' + ","
-        + '"' + book_day + '"' + "," + '"' + book_time + '"' + "," + '"' + book_time_start + '"' + ","
+        + '"' + book_day + '"' + "," + '"' + book_time_start + '"' + ","
         + '"' + book_time_end + '"' + "," + '"' + book_reason + '"' + "," + '"' + book_student + '"' + ","
         + '"' + stu_id + '"' + "," + '"' + book_date + '"' + "," + '"' + book_status + '"' + ","
         + '"' + reason_cancel + '"' + ");")
     conn.commit()
 
 
-def update_approval_status(stu_id, user_id, date, boolean):
+def remove_bookings(user_id, book_day, time_start, time_end):
+    c.execute("""DELETE FROM lec_available_time WHERE user_id = """ + '"' + user_id + '"' + " AND "
+              + "lec_day = " + '"' + book_day + '"' + " AND " + "lec_time_start = " + '"' + time_start
+              + '"' + " AND " + "lec_time_end = " + '"' + time_end + '";')
+
+
+def update_approval_status(stu_id, user_id, date, time, boolean):
     if boolean:
         c.execute("""UPDATE lec_bookings SET book_status = "Approved" WHERE stu_id = """ + '"' + str(stu_id) + '"'
-                  + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
+                  + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '"' + " AND "
+                  + "book_time_start = " + '"' + time + '";')
+
+        print(time)
+
     else:
         c.execute("""UPDATE lec_bookings SET book_status = "Rejected" WHERE stu_id = """ + '"' + str(stu_id) + '"'
                   + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
@@ -107,6 +131,19 @@ def update_user_password(user_id, old_pass, new_pass):
         return True
     else:
         return False
+
+
+def update_time_slot_stat(book_time_start, book_date, user_id, boolean):
+    if boolean:
+        c.execute("""UPDATE lec_available_time SET time_availability = "Booked" WHERE user_id = """ + '"' + user_id + '"'
+                  + " AND lec_date = " + '"' + book_date + '"' + " AND " + "lec_time_start = " + '"' + book_time_start
+                  + '"' + ';')
+    else:
+        c.execute(
+            """UPDATE lec_available_time SET time_availability = "Available" WHERE user_id = """ + '"' + user_id + '"'
+            + " AND lec_date = " + '"' + book_date + '"' + " AND " + "lec_time_start = " + '"' + book_time_start
+            + '"' + ';')
+    conn.commit()
 
 
 def get_logged_in_user():
@@ -169,7 +206,7 @@ def get_lec_free_time(user_id):
 
 
 def get_all_stu_bookings(stu_id):
-    c.execute("""SELECT user_credentials.user_name, user_credentials.user_faculty, user_credentials.user_room, 
+    c.execute("""SELECT user_credentials.user_name, user_credentials.user_faculty, user_credentials.user_room, user_credentials.user_id,
                 lec_bookings.book_day, lec_bookings.book_time_start, lec_bookings.book_time_end, lec_bookings.book_reason,
                 lec_bookings.book_student, lec_bookings.stu_id, lec_bookings.book_date, lec_bookings.book_status,
                 lec_bookings.reason_cancel FROM user_credentials INNER JOIN lec_bookings ON user_credentials.user_id = 
@@ -227,6 +264,20 @@ def search_lecture(lec_name):
     respond = c.fetchall()
     print("MMCS_DB_SEARCHED_RES: " + str(respond))
     return respond
+
+
+def get_lec_time_slots(lec_id):
+    c.execute("""SELECT lec_day, lec_time_start, lec_time_end, lec_date FROM lec_available_time WHERE user_id = """
+              + '"' + lec_id + '";')
+    respond = c.fetchall()
+    print("MMCS_DB_TIME_SLOTS: " + str(respond))
+    return respond
+
+
+def update_reason_cancel(stu_id, user_id, date, reason):
+    c.execute("""UPDATE lec_bookings SET reason_cancel = """ + '"' + reason + '"' + """ WHERE stu_id = """ + '"' + str(stu_id) + '"'
+                  + " AND user_id = " + '"' + str(user_id) + '"' + " AND book_date = " + '"' + date + '";')
+    conn.commit()
 
 
 def logout_user():
