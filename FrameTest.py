@@ -706,7 +706,6 @@ def listStudent_lecturer():
         for widget in top.winfo_children():
             widget.destroy()
         lecturer_main()
-    date_array = []
     label_font_screen = ('Arial', 30)
     label = tkinter.Label(top, text="Student Appointment List", font=label_font_screen)
     labelDetails = tkinter.Label(top, text="Appointment Details", font=label_font_screen)
@@ -723,11 +722,11 @@ def listStudent_lecturer():
     back_btn = tkinter.Button(top, text="Back", command=back, pady=4, padx=4, width="20",
                               height="2")
     tree = tker.Treeview(top)
-    tree = tker.Treeview(top, columns=('Name', 'Day', 'Time', 'ID', 'Status'))
+    tree = tker.Treeview(top, columns=('Name', 'Date', 'Time', 'ID', 'Status'))
 
     tree.heading('#0', text='#')
     tree.heading('#1', text='Name')
-    tree.heading('#2', text='Day')
+    tree.heading('#2', text='Date')
     tree.heading('#3', text='Time')
     tree.heading('#4', text='ID')
     tree.heading('#5', text='Status')
@@ -742,11 +741,10 @@ def listStudent_lecturer():
     def selectItem(a):
         curItem = tree.focus()
         values = tree.item(curItem)
-        indexItem = tree.index(curItem)
         stu_ids = values['values']
         labelName.config(text="Student Name: " + str(get_user_name(str(stu_ids[3]))))
         labelID.config(text="ID: " + str(stu_ids[3]))
-        labelDate.config(text="Date: " + str(date_array[indexItem]))
+        labelDate.config(text="Date: " + str(stu_ids[1]))
         labelTime.config(text="Consultation Time: " + str(stu_ids[2]))
         labelFaculty.config(text="Faculty: " + str(get_user_faculty(str(stu_ids[3]))))
         labelReason.config(text="Reason: " + str(get_user_reason(str(stu_ids[3]), str(get_logged_in_user()))))
@@ -756,8 +754,7 @@ def listStudent_lecturer():
     for j in range(len(get_all_lec_bookings(get_logged_in_user()))):
         full_array = (get_all_lec_bookings(get_logged_in_user()))[j]
         tree.insert("", 'end', text=str(j + 1),
-                    values=(full_array[0], full_array[1], full_array[2], full_array[5], full_array[4]))
-        date_array.append(full_array[3])
+                    values=(full_array[0], full_array[3], full_array[2], full_array[5], full_array[4]))
 
     if platform.system() == "Windows":
         label.place(x=190, y=5)
